@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="DigitalBanking.Application/DigitalBanking.Application.csproj" />
+    <Project Path="DigitalBanking.Domain/DigitalBanking.Domain.csproj" />
+    <Project Path="DigitalBanking.Infrastructure/DigitalBanking.Infrastructure.csproj" />
+    <Project Path="DigitalBanking.WebAPI/DigitalBanking.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="DigitalBanking.IntegrationTests/DigitalBanking.IntegrationTests.csproj" />
+    <Project Path="DigitalBanking.UnitTests/DigitalBanking.UnitTests.csproj" />
+  </Folder>
+</Solution>
