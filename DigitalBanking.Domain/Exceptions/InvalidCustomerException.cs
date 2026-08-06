@@ -2,7 +2,7 @@
 {
     public class InvalidCustomerException : DomainException
     {
-        public InvalidCustomerException(string message) : base(message)
+        public InvalidCustomerException(string email) : base($"Invalid details of customer {email}")
         {
         }
     }

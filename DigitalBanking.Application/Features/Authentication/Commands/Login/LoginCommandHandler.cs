@@ -2,6 +2,7 @@
 using DigitalBanking.Application.Interfaces.Security;
 using DigitalBanking.Domain.Exceptions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Authentication.Commands.Login
 {
@@ -12,15 +13,17 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
         private readonly ICustomerRepository _customerRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ILogger<LoginCommandHandler> _logger;
 
         public LoginCommandHandler(IUnitOfWork unitOfWork, IRefreshTokenRepository refreshTokenRepository, ICustomerRepository customerRepository,
-            IJwtTokenGenerator jwtTokenGenerator, IPasswordHasher passwordHasher) 
+            IJwtTokenGenerator jwtTokenGenerator, IPasswordHasher passwordHasher, ILogger<LoginCommandHandler> logger) 
         { 
             _unitOfWork = unitOfWork;
             _refreshTokenRepository = refreshTokenRepository;
             _customerRepository = customerRepository;
             _jwtTokenGenerator = jwtTokenGenerator;
             _passwordHasher = passwordHasher;
+            _logger = logger;
         }
 
         public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -48,6 +51,8 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
                 await _refreshTokenRepository.UpdateTokenAsync(refreshToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation($"Customer with an email {request.Email} logged in successfully");
 
             return new LoginResponse()
             {
