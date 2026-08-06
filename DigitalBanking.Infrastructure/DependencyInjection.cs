@@ -31,6 +31,7 @@ namespace DigitalBanking.Infrastructure
                     };
                 });
 
+
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 

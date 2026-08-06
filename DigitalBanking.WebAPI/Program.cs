@@ -1,64 +1,74 @@
 using DigitalBanking.WebAPI;
-using Microsoft.OpenApi.Models;
+using Serilog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.ConfigureApiDI(builder.Configuration);
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+try
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    Log.Information("Starting Digital Banking Api");
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container.
+
+    builder.Host.UseSerilog((context, services, configuration) =>
     {
-        Title = "Digital Banking API",
-        Version = "v1"
+        configuration.ReadFrom.Configuration(context.Configuration);
+        configuration.ReadFrom.Services(services);
+        configuration.Enrich.FromLogContext();
     });
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter: Bearer {your JWT token}"
-    });
+    builder.Services.AddControllers();
+    builder.Services.ConfigureApiDI(builder.Configuration);
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseExceptionHandler();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        {
-            new OpenApiSecurityScheme
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthentication();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = async (context, report) => {
+            var result = new
             {
-                Reference = new OpenApiReference
+                Status = report.Status,
+                TotalDuration = report.TotalDuration,
+                Checks = report.Entries.Select(entry => new
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
+                    Name = entry.Key,
+                    Status = entry.Value.Status,
+                    Duration = entry.Value.Duration,
+                    Description = entry.Value.Description
+                })
+            };
+
+            await context.Response.WriteAsJsonAsync(result);
         }
     });
-});
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

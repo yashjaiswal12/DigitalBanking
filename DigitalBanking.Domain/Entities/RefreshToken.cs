@@ -9,7 +9,7 @@ namespace DigitalBanking.Domain.Entities
         public Guid CustomerId { get; private set; }
         public string Token { get; private set; } = string.Empty;
         public DateTime? ExpiresOn { get; private set; }
-        public DateTime CreatedOn { get; private set; } = DateTime.Now;
+        public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
         public DateTime? RevokedOn { get; private set; }
         public bool IsRevoked => RevokedOn.HasValue;
 
