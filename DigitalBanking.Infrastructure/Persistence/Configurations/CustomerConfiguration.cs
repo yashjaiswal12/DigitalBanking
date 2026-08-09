@@ -14,12 +14,21 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
 
             entityTypeBuilder.Property(x => x.FirstName).IsRequired(true).HasMaxLength(100);
             entityTypeBuilder.Property(x => x.LastName).IsRequired(true).HasMaxLength(100);
-            entityTypeBuilder.Property(x => x.Email).IsRequired(true).HasMaxLength(200);
+            entityTypeBuilder.Property(x => x.Email).IsRequired(true).HasMaxLength(256);
             entityTypeBuilder.Property(x => x.PhoneNumber).IsRequired(true).HasMaxLength(20);
-            entityTypeBuilder.Property(x => x.PasswordHash).IsRequired(true);
+            entityTypeBuilder.Property(x => x.PasswordHash).IsRequired(true).HasMaxLength(500);
             entityTypeBuilder.Property(x => x.IsActive).IsRequired(true);
+            entityTypeBuilder.Property(x => x.CreatedBy).HasMaxLength(100);
+            entityTypeBuilder.Property(x => x.UpdatedBy).HasMaxLength(100);
+            entityTypeBuilder.Property(x => x.DeletedBy).HasMaxLength(100);
 
             entityTypeBuilder.HasIndex(x => x.Email).IsUnique(true);
+            entityTypeBuilder.HasIndex(x => x.PhoneNumber).IsUnique(true);
+            entityTypeBuilder.HasIndex(x => x.LastName);
+            entityTypeBuilder.HasIndex(x => x.CreatedAtUtc);
+            entityTypeBuilder.HasIndex(x => new {x.IsDeleted, x.IsActive, x.CreatedAtUtc});
+
+            entityTypeBuilder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

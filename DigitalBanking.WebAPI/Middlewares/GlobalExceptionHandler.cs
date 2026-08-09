@@ -1,5 +1,6 @@
 ﻿using DigitalBanking.Domain.Exceptions;
 using DigitalBanking.WebAPI.Common;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace DigitalBanking.WebAPI.Middlewares
@@ -26,6 +27,7 @@ namespace DigitalBanking.WebAPI.Middlewares
                 InvalidTokenException ex => (StatusCodes.Status401Unauthorized, ex.Message),
                 InvalidCustomerException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 DomainException ex => (StatusCodes.Status400BadRequest, ex.Message),
+                ValidationException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 _ => (StatusCodes.Status500InternalServerError, exception.Message)
             };
 

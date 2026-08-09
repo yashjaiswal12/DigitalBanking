@@ -24,6 +24,16 @@ namespace DigitalBanking.Infrastructure.Repositories
             return await _context.Customers.AnyAsync(x => x.Email.Equals(email), cancellationToken);
         }
 
+        public async Task<bool> CustomerExistsByPhoneAsync(string phone, CancellationToken cancellationToken)
+        {
+            return await _context.Customers.AnyAsync(x => x.PhoneNumber == phone, cancellationToken);
+        }
+
+        public void DeleteCustomer(Customer customer)
+        {
+            _context.Customers.Remove(customer);
+        }
+
         public async Task<Customer?> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _context.Customers.SingleOrDefaultAsync(x => x.Email.Equals(email), cancellationToken);
@@ -32,6 +42,22 @@ namespace DigitalBanking.Infrastructure.Repositories
         public async Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Customers.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task<List<Customer>> SearchCustomerAsync(string searchTerm, bool? isActive, CancellationToken cancellationToken)
+        {
+            var customer = await _context.Customers.AsNoTracking()
+                .Where(x => (x.FirstName.Contains(searchTerm) || x.LastName.Contains(searchTerm) || x.Email.Contains(searchTerm) 
+                || x.PhoneNumber.Contains(searchTerm)) && (isActive == null || x.IsActive == isActive))
+                .OrderBy(x => x.CreatedAtUtc)
+                .ToListAsync(cancellationToken);
+
+            return customer;
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            _context.Customers.Update(customer);
         }
     }
 }

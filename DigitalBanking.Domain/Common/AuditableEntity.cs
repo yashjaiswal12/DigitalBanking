@@ -3,21 +3,32 @@
     public abstract class AuditableEntity : BaseEntity
     {
         // Properties
-        public DateTime CreatedOn { get; protected set; } = DateTime.Now;
+        public DateTime? CreatedAtUtc { get; protected set; }
         public string? CreatedBy { get; protected set; }
-        public DateTime? UpdatedOn { get; protected set; }
+        public DateTime? UpdatedAtUtc { get; protected set; }
         public string? UpdatedBy { get; protected set; }
+        public DateTime? DeletedAtUtc { get; protected set; }
+        public string? DeletedBy { get; protected set; }
+        public bool IsDeleted { get; protected set; }
 
         // Behaviors
-        protected void SetCreatedBy(string createdByUser)
+        public void SetCreatedBy(string createdByUser, DateTime utcNow)
         {
             CreatedBy = createdByUser;
+            CreatedAtUtc = utcNow;
         }
 
-        protected void SetUpdatedBy(string updatedByUser, DateTime updatedOn) 
-        { 
-            UpdatedBy = updatedByUser; 
-            UpdatedOn = updatedOn;
+        public void MarkAsDeleted(string deletedBy, DateTime utcNow)
+        {
+            DeletedBy = deletedBy;
+            DeletedAtUtc = utcNow;
+            IsDeleted = true;
+        }
+
+        public void MarkAsUpdated(string updatedBy, DateTime utcNow)
+        {
+            UpdatedBy = updatedBy;
+            UpdatedAtUtc = utcNow;
         }
     }
 }

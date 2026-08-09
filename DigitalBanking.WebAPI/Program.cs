@@ -1,6 +1,7 @@
 using DigitalBanking.WebAPI;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Asp.Versioning;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -20,6 +21,14 @@ try
 
     builder.Services.AddControllers();
     builder.Services.ConfigureApiDI(builder.Configuration);
+
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    });
 
     var app = builder.Build();
 

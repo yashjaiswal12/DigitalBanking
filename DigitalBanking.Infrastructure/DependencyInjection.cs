@@ -1,9 +1,11 @@
-﻿using DigitalBanking.Application.Interfaces.Persistence;
+﻿using DigitalBanking.Application.Interfaces.Common;
+using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Application.Interfaces.Security;
 using DigitalBanking.Infrastructure.Identities;
 using DigitalBanking.Infrastructure.Identities.Configuration;
 using DigitalBanking.Infrastructure.Persistence;
 using DigitalBanking.Infrastructure.Repositories;
+using DigitalBanking.Infrastructure.Services.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +45,9 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             
             return services;
         }

@@ -6,7 +6,8 @@
     <Project Path="DigitalBanking.WebAPI/DigitalBanking.WebAPI.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="DigitalBanking.IntegrationTests/DigitalBanking.IntegrationTests.csproj" />
-    <Project Path="DigitalBanking.UnitTests/DigitalBanking.UnitTests.csproj" />
+    <Project Path="DigitalBanking.Application.Tests/DigitalBanking.Application.Tests.csproj" Id="29501d9b-8346-4dd2-b283-bcff8204dc17" />
+    <Project Path="DigitalBanking.Infrastructure.Tests/DigitalBanking.Infrastructure.Tests.csproj" Id="37e6689e-ab28-4db5-82a1-9df96d79b2a8" />
+    <Project Path="DigitalBanking.WebApi.Tests/DigitalBanking.WebApi.Tests.csproj" Id="88428342-3617-4766-aff6-a6724e60c010" />
   </Folder>
 </Solution>

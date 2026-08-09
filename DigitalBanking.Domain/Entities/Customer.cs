@@ -1,9 +1,9 @@
 ﻿using DigitalBanking.Domain.Common;
-using System.Runtime.InteropServices;
+using DigitalBanking.Domain.Exceptions;
 
 namespace DigitalBanking.Domain.Entities
 {
-    public class Customer : BaseEntity
+    public class Customer : AuditableEntity
     {
         #region Properties
 
@@ -24,7 +24,7 @@ namespace DigitalBanking.Domain.Entities
         }
 
         // to make sure we've all the correct data for customer(no partial data allowed)
-        public Customer(string firstName, string lastName, string email, string phoneNumber, string passwordHash)
+        private Customer(string firstName, string lastName, string email, string phoneNumber, string passwordHash)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -38,32 +38,110 @@ namespace DigitalBanking.Domain.Entities
 
         #region Behaviors
 
-        public bool Activate()
+        public void Activate()
         {
-            return true;
+            if (IsDeleted)
+                throw new DomainException("Deleted customer cannot be activated");
+
+            IsActive = true;
         }
 
-        public bool Deactivate()
+        public void Deactivate()
         {
-            return false;
+            if (IsDeleted)
+                throw new DomainException("Deleted customer cannot be deactivated");
+
+            IsActive = false;
         }
 
-        public void UpdateProfile(string firstName, string lastName, string email, string phoneNumber)
+        public void Delete(string deletedBy, DateTime utcNow)
         {
+            if (IsDeleted)
+                throw new DomainException("Customer already deleted.");
+
+            MarkAsDeleted(deletedBy, utcNow);
+        }
+
+        public void UpdateProfile(string firstName, string lastName, string email, string phone, string updatedBy, DateTime utcNow)
+        {
+            if (IsDeleted)
+                throw new DomainException("Customer already deleted.");
+
+            ValidateFirstName(firstName);  
             FirstName = firstName;
+
+            ValidateLastName(lastName);
             LastName = lastName;
-            Email = email;
-            PhoneNumber = phoneNumber;
+
+            ValidateEmail(email);
+            Email = NormalizeEmail(email);
+
+            PhoneNumber = NormalizePhone(phone);
+            MarkAsUpdated(updatedBy, utcNow);
         }
 
-        public void ChangePassword(string updatedHash)
+        public void ChangePassword(string updatedHash, string updatedBy, DateTime utcNow)
         {
+            if (IsDeleted)
+                throw new DomainException("Customer already deleted.");
+
+            ValidatePassword(updatedHash);
             PasswordHash = updatedHash;
+
+            MarkAsUpdated(updatedBy, utcNow);
         }
 
-        public static Customer Create(string firstName, string lastName, string email, string phoneNumber, string passwordHash)
+        public static Customer Create(string firstName, string lastName, string email, string phone, string passwordHash)
         {
-            return new Customer(firstName, lastName, email, phoneNumber, passwordHash);
+            ValidateFirstName(firstName);
+            ValidateLastName(lastName);
+            ValidateEmail(email);
+            email = NormalizeEmail(email);
+            ValidatePhone(phone);
+            phone = NormalizePhone(phone);
+            ValidatePassword(passwordHash);
+
+            return new Customer(firstName, lastName, email, phone, passwordHash);
+        }
+
+        private static string NormalizeEmail(string email)
+        {
+            return email.Trim().ToLowerInvariant();
+        }
+
+        private static string NormalizePhone(string phone)
+        {
+            return phone.Replace(" ","").Replace("+91","").Replace("-","");
+        }
+
+        private static void ValidateFirstName(string firstName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new DomainException("First name is required");
+        }
+
+        private static void ValidateLastName(string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new DomainException("Last name is required");
+        }
+
+        private static void ValidateEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new DomainException("Email is required");
+        }
+
+        private static void ValidatePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new DomainException("Phone number is required");
+        }
+
+        private static void ValidatePassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                throw new DomainException("Password is required");
         }
 
         #endregion

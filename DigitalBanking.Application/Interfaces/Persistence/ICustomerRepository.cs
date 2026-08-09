@@ -4,9 +4,13 @@ namespace DigitalBanking.Application.Interfaces.Persistence
 {
     public interface ICustomerRepository
     {
-        Task<Customer> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<Customer> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Customer?> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken);
         Task AddCustomerAsync(Customer customer, CancellationToken cancellationToken);
         Task<bool> CustomerExistsByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<bool> CustomerExistsByPhoneAsync(string phone, CancellationToken cancellationToken);
+        void UpdateCustomer(Customer customer);
+        void DeleteCustomer(Customer customer);
+        Task<List<Customer>> SearchCustomerAsync(string searchTerm, bool? isActive, CancellationToken cancellationToken);
     }
 }
