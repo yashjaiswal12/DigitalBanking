@@ -21,11 +21,12 @@ namespace DigitalBanking.Application.Features.Customers.SearchCustomers.Queries
         {
             var customers = await _customerRepository.SearchCustomerAsync(request.SearchTerm, request.IsActive, cancellationToken);
 
-            if (customers.Count() == 0)
+            if (customers is null || customers.Count() == 0)
                 throw new CustomerNotFoundException();
 
             return customers.Select(customer => new Customer() 
             { 
+                Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 Email = customer.Email,

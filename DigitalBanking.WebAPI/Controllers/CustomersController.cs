@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using DigitalBanking.Application.Features.Customers.DTOs;
+using DigitalBanking.Application.Features.Customers.GetCustomerById;
 using DigitalBanking.Application.Features.Customers.SearchCustomers.Queries;
 using DigitalBanking.WebAPI.Common;
 using MediatR;
@@ -29,6 +30,18 @@ namespace DigitalBanking.WebAPI.Controllers
             {
                 Data = response,
                 Message = "Customer found."
+            });
+        }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetCustomerByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var request = new GetCustomerByIdQuery() { Id = id };
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return Ok(new ApiResponse<Customer>(){
+                Data = result,
+                Message = "Customer retrieved successfully."
             });
         }
     }
