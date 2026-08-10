@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using DigitalBanking.Application.Features.Customers.Commands.DeactivateCustomer;
 using DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer;
 using DigitalBanking.Application.Features.Customers.DTOs;
 using DigitalBanking.Application.Features.Customers.Queries.GetCustomerById;
@@ -57,6 +58,14 @@ namespace DigitalBanking.WebAPI.Controllers
                 Data = result,
                 Message = "Customer information updated successfully."
             });
+        }
+
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> DeactivateCustomer([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var request = new DeactivateCustomerCommand { CustomerId = id };
+            await _mediator.Send(request, cancellationToken);
+            return NoContent();
         }
     }
 }

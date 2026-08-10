@@ -42,7 +42,7 @@ namespace DigitalBanking.Domain.Entities
         public void Activate()
         {
             if (IsDeleted)
-                throw new DomainException("Deleted customer cannot be activated");
+                return;
 
             IsActive = true;
         }
@@ -50,17 +50,17 @@ namespace DigitalBanking.Domain.Entities
         public void Deactivate()
         {
             if (IsDeleted)
-                throw new DomainException("Deleted customer cannot be deactivated");
+                return;
 
             IsActive = false;
         }
 
-        public void Delete(string deletedBy, DateTime utcNow)
+        public void Delete()
         {
             if (IsDeleted)
-                throw new DomainException("Customer already deleted.");
+                return;
 
-            MarkAsDeleted(deletedBy, utcNow);
+            IsDeleted = true;
         }
 
         public void UpdateProfile(string firstName, string lastName, string email, string phone)

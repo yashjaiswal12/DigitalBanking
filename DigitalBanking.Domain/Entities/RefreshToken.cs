@@ -21,7 +21,7 @@ namespace DigitalBanking.Domain.Entities
         { 
         }
 
-        public RefreshToken(Guid customerId, string token, DateTime expiresOn, DateTime createdOn)
+        private RefreshToken(Guid customerId, string token, DateTime expiresOn, DateTime createdOn)
         {
             CustomerId = customerId;
             Token = token;
@@ -53,6 +53,12 @@ namespace DigitalBanking.Domain.Entities
         public static RefreshToken Create(Guid customerId, string token, DateTime expiresOn, DateTime createdOn)
         {
             return new RefreshToken(customerId, token, expiresOn, createdOn);
+        }
+
+        public void UpdateRefreshToken(string token, DateTime? expiresOn)
+        {
+            Token = token;
+            ExpiresOn = expiresOn;
         }
 
         #endregion

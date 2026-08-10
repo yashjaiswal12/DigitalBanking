@@ -44,11 +44,11 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(customer);
             var refreshToken = _jwtTokenGenerator.GenerateRefreshToken(customer);
 
-            var refreshTokenExists = await _refreshTokenRepository.GetRefreshTokenByCustomerIdAsync(customer.Id, cancellationToken);
-            if (!refreshTokenExists)
+            var existingRefreshToken = await _refreshTokenRepository.GetRefreshTokenByCustomerIdAsync(customer.Id, cancellationToken);
+            if (existingRefreshToken == null)
                 await _refreshTokenRepository.AddTokenAsync(refreshToken, cancellationToken);
             else
-                await _refreshTokenRepository.UpdateTokenAsync(refreshToken);
+                existingRefreshToken.UpdateRefreshToken(refreshToken.Token, refreshToken.ExpiresOn);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

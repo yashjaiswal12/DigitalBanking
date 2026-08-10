@@ -41,7 +41,7 @@ namespace DigitalBanking.Infrastructure.Repositories
 
         public async Task<Customer?> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            return await _context.Customers.AsNoTracking().SingleOrDefaultAsync(x => x.Email.Equals(email), cancellationToken);
+            return await _context.Customers.SingleOrDefaultAsync(x => x.Email.Equals(email), cancellationToken);
         }
 
         public async Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken)
