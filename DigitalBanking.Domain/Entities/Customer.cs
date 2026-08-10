@@ -13,6 +13,7 @@ namespace DigitalBanking.Domain.Entities
         public string Email { get; private set; } = string.Empty;
         public string PasswordHash { get; private set; } = string.Empty;
         public bool IsActive { get; private set; }
+        public byte[] RowVersion { get; private set; } = [];
 
         #endregion
 
@@ -62,7 +63,7 @@ namespace DigitalBanking.Domain.Entities
             MarkAsDeleted(deletedBy, utcNow);
         }
 
-        public void UpdateProfile(string firstName, string lastName, string email, string phone, string updatedBy, DateTime utcNow)
+        public void UpdateProfile(string firstName, string lastName, string email, string phone)
         {
             if (IsDeleted)
                 throw new DomainException("Customer already deleted.");
@@ -77,7 +78,6 @@ namespace DigitalBanking.Domain.Entities
             Email = NormalizeEmail(email);
 
             PhoneNumber = NormalizePhone(phone);
-            MarkAsUpdated(updatedBy, utcNow);
         }
 
         public void ChangePassword(string updatedHash, string updatedBy, DateTime utcNow)
@@ -87,8 +87,6 @@ namespace DigitalBanking.Domain.Entities
 
             ValidatePassword(updatedHash);
             PasswordHash = updatedHash;
-
-            MarkAsUpdated(updatedBy, utcNow);
         }
 
         public static Customer Create(string firstName, string lastName, string email, string phone, string passwordHash)

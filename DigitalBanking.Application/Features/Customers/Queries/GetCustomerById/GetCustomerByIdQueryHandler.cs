@@ -4,7 +4,7 @@ using DigitalBanking.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DigitalBanking.Application.Features.Customers.GetCustomerById
+namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
 {
     public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, Customer>
     {

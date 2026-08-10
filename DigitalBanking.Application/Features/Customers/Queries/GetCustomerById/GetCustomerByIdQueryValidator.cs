@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DigitalBanking.Application.Features.Customers.GetCustomerById
+namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
 {
     public class GetCustomerByIdQueryValidator : AbstractValidator<GetCustomerByIdQuery>
     {

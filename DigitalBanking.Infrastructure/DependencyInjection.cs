@@ -47,6 +47,7 @@ namespace DigitalBanking.Infrastructure
             services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             
             return services;

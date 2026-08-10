@@ -34,6 +34,11 @@ namespace DigitalBanking.Infrastructure.Repositories
             _context.Customers.Remove(customer);
         }
 
+        public async Task<Customer?> GetByIdUpdateAsync(Guid customerId, CancellationToken cancellationToken)
+        {
+            return await _context.Customers.SingleOrDefaultAsync(x => x.Id == customerId, cancellationToken);
+        }
+
         public async Task<Customer?> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _context.Customers.AsNoTracking().SingleOrDefaultAsync(x => x.Email.Equals(email), cancellationToken);

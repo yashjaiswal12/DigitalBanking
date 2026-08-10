@@ -1,7 +1,8 @@
 ﻿using Asp.Versioning;
+using DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer;
 using DigitalBanking.Application.Features.Customers.DTOs;
-using DigitalBanking.Application.Features.Customers.GetCustomerById;
-using DigitalBanking.Application.Features.Customers.SearchCustomers.Queries;
+using DigitalBanking.Application.Features.Customers.Queries.GetCustomerById;
+using DigitalBanking.Application.Features.Customers.Queries.SearchCustomers;
 using DigitalBanking.WebAPI.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,6 +43,19 @@ namespace DigitalBanking.WebAPI.Controllers
             return Ok(new ApiResponse<Customer>(){
                 Data = result,
                 Message = "Customer retrieved successfully."
+            });
+        }
+
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> UpdateCustomerAsync([FromRoute] Guid id, UpdateCustomerCommand request, CancellationToken cancellationToken)
+        {
+            request.CustomerId = id;
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return Ok(new ApiResponse<Customer>
+            {
+                Data = result,
+                Message = "Customer information updated successfully."
             });
         }
     }

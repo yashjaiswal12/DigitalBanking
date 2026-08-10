@@ -1,7 +1,7 @@
 ﻿using DigitalBanking.Application.Features.Customers.DTOs;
 using MediatR;
 
-namespace DigitalBanking.Application.Features.Customers.GetCustomerById
+namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
 {
     public class GetCustomerByIdQuery : IRequest<Customer>
     {

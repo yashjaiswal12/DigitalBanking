@@ -2,6 +2,7 @@
 using DigitalBanking.WebAPI.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalBanking.WebAPI.Middlewares
 {
@@ -28,6 +29,7 @@ namespace DigitalBanking.WebAPI.Middlewares
                 InvalidCustomerException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 DomainException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 ValidationException ex => (StatusCodes.Status400BadRequest, ex.Message),
+                DbUpdateConcurrencyException ex => (StatusCodes.Status409Conflict, ex.Message),
                 _ => (StatusCodes.Status500InternalServerError, exception.Message)
             };
 

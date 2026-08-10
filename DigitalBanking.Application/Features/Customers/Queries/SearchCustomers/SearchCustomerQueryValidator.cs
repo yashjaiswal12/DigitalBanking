@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DigitalBanking.Application.Features.Customers.SearchCustomers.Queries
+namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
 {
     public class SearchCustomerQueryValidator : AbstractValidator<SearchCustomerQuery>
     {

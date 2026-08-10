@@ -1,4 +1,4 @@
-﻿using DigitalBanking.Application.Features.Customers.SearchCustomers.Queries;
+﻿using DigitalBanking.Application.Features.Customers.Queries.SearchCustomers;
 using FluentAssertions;
 
 namespace DigitalBanking.Application.Tests.Features.Customers.SearchCustomers

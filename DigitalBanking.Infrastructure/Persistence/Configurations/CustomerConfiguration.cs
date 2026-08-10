@@ -29,6 +29,8 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.HasIndex(x => new {x.IsDeleted, x.IsActive, x.CreatedAtUtc});
 
             entityTypeBuilder.HasQueryFilter(x => !x.IsDeleted);
+
+            entityTypeBuilder.Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken(true);
         }
     }
 }

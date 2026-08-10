@@ -4,7 +4,7 @@ using DigitalBanking.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DigitalBanking.Application.Features.Customers.SearchCustomers.Queries
+namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
 {
     public class SearchCustomerQueryHandler : IRequestHandler<SearchCustomerQuery, List<Customer>>
     {

@@ -1,4 +1,4 @@
-﻿using DigitalBanking.Application.Features.Customers.SearchCustomers.Queries;
+﻿using DigitalBanking.Application.Features.Customers.Queries.SearchCustomers;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Domain.Entities;
 using DigitalBanking.Domain.Exceptions;

@@ -1,4 +1,4 @@
-﻿using DigitalBanking.Application.Features.Customers.GetCustomerById;
+﻿using DigitalBanking.Application.Features.Customers.Queries.GetCustomerById;
 using FluentAssertions;
 
 namespace DigitalBanking.Application.Tests.Features.Customers.GetCustomerById

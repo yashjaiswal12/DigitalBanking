@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Authentication\DTOs\" />
-    <Folder Include="Features\Customers\SearchCustomers\Commands\" />
   </ItemGroup>
 
 </Project>

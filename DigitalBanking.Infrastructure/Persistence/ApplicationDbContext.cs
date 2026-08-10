@@ -39,7 +39,7 @@ namespace DigitalBanking.Infrastructure.Persistence
                         break;
                 }
             }
-            return 0;
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
         // keeps entity mapping separate from entities and follows the Single Responsibility Principle.

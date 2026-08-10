@@ -1,4 +1,4 @@
-﻿using DigitalBanking.Application.Features.Customers.GetCustomerById;
+﻿using DigitalBanking.Application.Features.Customers.Queries.GetCustomerById;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Domain.Entities;
 using DigitalBanking.Domain.Exceptions;

@@ -12,5 +12,6 @@ namespace DigitalBanking.Application.Interfaces.Persistence
         void UpdateCustomer(Customer customer);
         void DeleteCustomer(Customer customer);
         Task<List<Customer>> SearchCustomerAsync(string searchTerm, bool? isActive, CancellationToken cancellationToken);
+        Task<Customer?> GetByIdUpdateAsync(Guid customerId, CancellationToken cancellationToken);
     }
 }
