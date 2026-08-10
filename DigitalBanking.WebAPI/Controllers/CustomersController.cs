@@ -24,6 +24,9 @@ namespace DigitalBanking.WebAPI.Controllers
             _mediator = mediator;
         }
 
+        [ProducesResponseType(typeof(ApiResponse<List<Customer>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [HttpGet("search")]
         public async Task<IActionResult> SearchCustomerAsync([FromQuery] SearchCustomerQuery request, CancellationToken cancellationToken)
         {
