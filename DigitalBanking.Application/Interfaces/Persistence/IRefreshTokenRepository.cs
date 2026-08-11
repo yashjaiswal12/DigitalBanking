@@ -9,5 +9,6 @@ namespace DigitalBanking.Application.Interfaces.Persistence
         Task UpdateTokenAsync(RefreshToken refreshToken);
         Task<bool> RefreshTokenByCustomerIdExistsAsync(Guid id, CancellationToken cancellationToken);
         Task<RefreshToken?> GetRefreshTokenByCustomerIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<RefreshToken>> GetRefreshTokensByCustomerIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

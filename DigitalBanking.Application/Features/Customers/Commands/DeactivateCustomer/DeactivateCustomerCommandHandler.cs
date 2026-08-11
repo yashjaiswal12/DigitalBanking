@@ -2,6 +2,7 @@
 using DigitalBanking.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace DigitalBanking.Application.Features.Customers.Commands.DeactivateCustomer
@@ -30,13 +31,21 @@ namespace DigitalBanking.Application.Features.Customers.Commands.DeactivateCusto
             customer.Deactivate();
             customer.Delete();
 
-            var refreshToken = await _refreshTokenRepository.GetRefreshTokenByCustomerIdAsync(customer.Id, cancellationToken);
-            if (refreshToken != null)
-                refreshToken.Revoke(DateTime.UtcNow);
+            var refreshTokens = await _refreshTokenRepository.GetRefreshTokensByCustomerIdAsync(customer.Id, cancellationToken);
+            if (refreshTokens.Count != 0)
+            {
+                var utcNow = DateTime.UtcNow;
+                foreach (var refreshToken in refreshTokens) 
+                {
+                    refreshToken.Revoke(utcNow);
+                }
+            }
 
             _customerRepository.DeleteCustomer(customer);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.Log(LogLevel.Information, "Customer {id} deleted.", request.CustomerId);
         }
     }
 }

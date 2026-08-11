@@ -21,8 +21,10 @@ namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
         {
             var customers = await _customerRepository.SearchCustomerAsync(request.SearchTerm, request.IsActive, cancellationToken);
 
-            if (customers is null || customers.Count() == 0)
+            if (customers.Count == 0)
                 throw new CustomerNotFoundException();
+
+            _logger.Log(LogLevel.Information, "Retrieved relevant customers list based on the search term");
 
             return customers.Select(customer => new Customer() 
             { 
@@ -30,7 +32,8 @@ namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber
+                PhoneNumber = customer.PhoneNumber,
+                RowVersion = Convert.ToBase64String(customer.RowVersion)
             }).ToList();
         }
     }

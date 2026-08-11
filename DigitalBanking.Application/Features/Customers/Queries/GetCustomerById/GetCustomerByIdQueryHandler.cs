@@ -23,13 +23,16 @@ namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
             if (customer is null)
                 throw new CustomerNotFoundException();
 
+            _logger.Log(LogLevel.Information, "Customer with {id} retrieved sucessfully", request.Id);
+
             return new Customer
             {
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber
+                PhoneNumber = customer.PhoneNumber,
+                RowVersion = Convert.ToBase64String(customer.RowVersion)
             };
         }
     }

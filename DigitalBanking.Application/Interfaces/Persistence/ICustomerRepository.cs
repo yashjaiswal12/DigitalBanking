@@ -7,7 +7,8 @@ namespace DigitalBanking.Application.Interfaces.Persistence
         Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Customer?> GetCustomerByEmailAsync(string email, CancellationToken cancellationToken);
         Task AddCustomerAsync(Customer customer, CancellationToken cancellationToken);
-        Task<bool> CustomerExistsByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<bool> CustomerExistsByEmailAsync(string email, Guid? excludingCustomerId, CancellationToken cancellationToken);
+        Task<bool> CustomerExistsByPhoneAsync(string phone, Guid? excludingCustomerId, CancellationToken cancellationToken);
         Task<bool> CustomerExistsByPhoneAsync(string phone, CancellationToken cancellationToken);
         void UpdateCustomer(Customer customer);
         void DeleteCustomer(Customer customer);

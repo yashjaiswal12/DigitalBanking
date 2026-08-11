@@ -12,15 +12,13 @@ namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateCustomerCommandHandler> _logger;
-        private readonly IDateTimeProvider _dateTimeProvider;
 
         public UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork, 
-            ILogger<UpdateCustomerCommandHandler> logger, IDateTimeProvider dateTimeProvider)
+            ILogger<UpdateCustomerCommandHandler> logger)
         {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<Customer> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
@@ -29,13 +27,21 @@ namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
                 ?? throw new CustomerNotFoundException();
 
             var normalizedEmail = request.Email.Trim().ToLowerInvariant();
-            var customerExists = await _customerRepository.CustomerExistsByEmailAsync(normalizedEmail, cancellationToken);
-            if (customerExists)
+            var customerEmailExists = await _customerRepository.CustomerExistsByEmailAsync(normalizedEmail, customer.Id, cancellationToken);
+            if (customerEmailExists)
                 throw new CustomerAlreadyExistsException(request.Email);
+
+
+            var normalizedPhone = request.Phone.Replace(" ", "").Replace("+91", "").Replace("-", "");
+            var customerPhoneExists = await _customerRepository.CustomerExistsByPhoneAsync(normalizedPhone, customer.Id, cancellationToken);
+            if (customerPhoneExists)
+                throw new CustomerAlreadyExistsException(request.Phone);
 
             customer.UpdateProfile(request.FirstName, request.LastName, request.Email, request.Phone);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.Log(LogLevel.Information, "Customer information with {id} updated sucessfully", request.CustomerId);
 
             return new Customer
             {
@@ -43,7 +49,8 @@ namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
                 LastName = customer.LastName,
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
-                Id = customer.Id
+                Id = customer.Id,
+                RowVersion = Convert.ToBase64String(customer.RowVersion)
             };
         }
     }

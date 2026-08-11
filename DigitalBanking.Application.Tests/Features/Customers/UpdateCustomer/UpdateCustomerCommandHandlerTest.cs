@@ -14,15 +14,13 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
         private readonly Mock<ICustomerRepository> _mockCustomerRepository;
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly UpdateCustomerCommandHandler _handler;
-        private readonly Mock<IDateTimeProvider> _mockDateTimeProvider;
 
         public UpdateCustomerCommandHandlerTest()
         {
             _mockCustomerRepository = new Mock<ICustomerRepository>();
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockDateTimeProvider = new Mock<IDateTimeProvider>();
             _handler = new UpdateCustomerCommandHandler(_mockCustomerRepository.Object, _mockUnitOfWork.Object,
-                NullLogger<UpdateCustomerCommandHandler>.Instance, _mockDateTimeProvider.Object);
+                NullLogger<UpdateCustomerCommandHandler>.Instance);
         }
 
         [Fact]
@@ -34,7 +32,6 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "phone", "password-hash");
 
             _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
-            _mockDateTimeProvider.Setup(x => x.UtcNow).Returns(utcNow);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
             var command = new UpdateCustomerCommand()
@@ -65,7 +62,6 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
 
             _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync((Customer?)null);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(0);
-            _mockDateTimeProvider.Setup(x => x.UtcNow).Returns(utcNow);
 
             var command = new UpdateCustomerCommand()
             {
@@ -91,8 +87,7 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "phone", "password-hash");
 
             _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
-            _mockCustomerRepository.Setup(x => x.CustomerExistsByEmailAsync(customer.Email, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-            _mockDateTimeProvider.Setup(x => x.UtcNow).Returns(utcNow);
+            _mockCustomerRepository.Setup(x => x.CustomerExistsByEmailAsync(customer.Email, customerId, It.IsAny<CancellationToken>())).ReturnsAsync(true);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(0);
 
             var command = new UpdateCustomerCommand()

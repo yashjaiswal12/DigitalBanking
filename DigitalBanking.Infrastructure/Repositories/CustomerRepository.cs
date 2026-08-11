@@ -19,9 +19,16 @@ namespace DigitalBanking.Infrastructure.Repositories
             await _context.Customers.AddAsync(customer, cancellationToken);
         }
 
-        public async Task<bool> CustomerExistsByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<bool> CustomerExistsByEmailAsync(string email, Guid? excludeCustomerId, CancellationToken cancellationToken)
         {
-            return await _context.Customers.AnyAsync(x => x.Email.Equals(email), cancellationToken);
+            return await _context.Customers.AnyAsync(x => x.Email.Equals(email) 
+                && (!excludeCustomerId.HasValue || x.Id != excludeCustomerId), cancellationToken);
+        }
+
+        public async Task<bool> CustomerExistsByPhoneAsync(string phone, Guid? excludeCustomerId, CancellationToken cancellationToken)
+        {
+            return await _context.Customers.AnyAsync(x => x.PhoneNumber.Equals(phone)
+                && (!excludeCustomerId.HasValue || x.Id != excludeCustomerId), cancellationToken);
         }
 
         public async Task<bool> CustomerExistsByPhoneAsync(string phone, CancellationToken cancellationToken)

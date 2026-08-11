@@ -28,8 +28,8 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
 
         public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var customerExists = await _customerRepository.CustomerExistsByEmailAsync(request.Email, cancellationToken);
-            if (!customerExists)
+            var customerEmailExists = await _customerRepository.CustomerExistsByEmailAsync(request.Email, null, cancellationToken);
+            if (!customerEmailExists)
                 throw new InvalidCustomerException(request.Email);
 
             var customer = await _customerRepository.GetCustomerByEmailAsync(request.Email, cancellationToken);

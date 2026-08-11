@@ -25,9 +25,14 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.RegisterCu
 
         public async Task<RegisterCustomerResponse> Handle(RegisterCustomerCommand request, CancellationToken cancellationToken)
         {
-            var emailExists = await _customerRepository.CustomerExistsByEmailAsync(request.Email.Trim().ToLowerInvariant(), cancellationToken);
+            var emailExists = await _customerRepository.CustomerExistsByEmailAsync(request.Email.Trim().ToLowerInvariant(), null, cancellationToken);
             if (emailExists)
                 throw new CustomerAlreadyExistsException(request.Email);
+
+            var normalizedPhone = request.PhoneNumber.Replace(" ", "").Replace("+91", "").Replace("-", "");
+            var phoneExists = await _customerRepository.CustomerExistsByPhoneAsync(normalizedPhone, null, cancellationToken);
+            if (phoneExists)
+                throw new CustomerAlreadyExistsException(request.PhoneNumber);
 
             var passwordHash = _passwordHasher.Hash(request.Password);
 

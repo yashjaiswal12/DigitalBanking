@@ -17,7 +17,8 @@ namespace DigitalBanking.WebAPI.Middlewares
 
         public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
         {
-            _logger.LogError(exception, $"Unhandled exception occured while executing request {context.Request.Method} {context.Request.Path}");
+            _logger.LogError(exception, "Unhandled exception occured while executing request {Method} {Path}"
+                , context.Request.Method, context.Request.Path);
 
             var response = new ApiErrorResponse();
 
@@ -30,7 +31,7 @@ namespace DigitalBanking.WebAPI.Middlewares
                 DomainException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 ValidationException ex => (StatusCodes.Status400BadRequest, ex.Message),
                 DbUpdateConcurrencyException ex => (StatusCodes.Status409Conflict, ex.Message),
-                _ => (StatusCodes.Status500InternalServerError, exception.Message)
+                _ => (StatusCodes.Status500InternalServerError, "An unexpected error occured!")
             };
 
             context.Response.StatusCode = statuscode;

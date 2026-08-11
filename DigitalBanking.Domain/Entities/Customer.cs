@@ -80,7 +80,7 @@ namespace DigitalBanking.Domain.Entities
             PhoneNumber = NormalizePhone(phone);
         }
 
-        public void ChangePassword(string updatedHash, string updatedBy, DateTime utcNow)
+        public void ChangePassword(string updatedHash)
         {
             if (IsDeleted)
                 throw new DomainException("Customer already deleted.");
