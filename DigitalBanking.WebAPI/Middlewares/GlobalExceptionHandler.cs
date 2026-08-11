@@ -3,6 +3,7 @@ using DigitalBanking.WebAPI.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace DigitalBanking.WebAPI.Middlewares
 {
