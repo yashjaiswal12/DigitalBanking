@@ -47,8 +47,9 @@ namespace DigitalBanking.Application.Tests.Features.Customers.SearchCustomers
         {
             // Arrange
             var query = new SearchCustomerQuery() { SearchTerm = "Unknown", IsActive = true };
+            List<Customer> customers = new List<Customer> { }; 
 
-            _mockRepository.Setup(x => x.SearchCustomerAsync(query.SearchTerm, query.IsActive, It.IsAny<CancellationToken>()));
+            _mockRepository.Setup(x => x.SearchCustomerAsync(query.SearchTerm, query.IsActive, It.IsAny<CancellationToken>())).ReturnsAsync(customers);
 
             // Act And
 

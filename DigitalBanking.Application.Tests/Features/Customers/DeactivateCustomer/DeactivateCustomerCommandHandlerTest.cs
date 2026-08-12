@@ -27,15 +27,17 @@ namespace DigitalBanking.Application.Tests.Features.Customers.DeactivateCustomer
         public async Task Should_Return_True_If_Customer_Deleted()
         {
             // Arrange
-            var customerId = Guid.NewGuid();
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "0000999909", "hash-pass");
-            var refreshToken = RefreshToken.Create(customerId, "tokenValue", DateTime.UtcNow, DateTime.UtcNow);
+            List<RefreshToken> refreshTokens = new List<RefreshToken>
+            {
+                RefreshToken.Create(customer.Id, "tokenValue", DateTime.UtcNow, DateTime.UtcNow) 
+            };
 
-            _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-            _mockRefreshTokenRepository.Setup(x => x.GetRefreshTokenByCustomerIdAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(refreshToken);
+            _mockRefreshTokenRepository.Setup(x => x.GetRefreshTokensByCustomerIdAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(refreshTokens);
 
-            var command = new DeactivateCustomerCommand { CustomerId = customerId };
+            var command = new DeactivateCustomerCommand { CustomerId = customer.Id };
             
             //Act
             await _handler.Handle(command, CancellationToken.None);
@@ -44,7 +46,7 @@ namespace DigitalBanking.Application.Tests.Features.Customers.DeactivateCustomer
             Assert.False(customer.IsActive);
             Assert.True(customer.IsDeleted);
 
-            _mockCustomerRepository.Verify(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>()), Times.Once);
+            _mockCustomerRepository.Verify(x => x.GetByIdUpdateAsync(customer.Id, It.IsAny<CancellationToken>()), Times.Once);
             _mockUnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 

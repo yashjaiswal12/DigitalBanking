@@ -114,8 +114,8 @@ namespace DigitalBanking.Domain.Entities
             if (Status != AccountStatus.Active && Status != AccountStatus.Frozen)
                 throw new InvalidAccountStatusException($"Account cannot be closed from status {Status}");
 
-            if (LedgerBalance > 0)
-                throw new InvalidAccountOperationException("An account cannot be closed while it has a non-zero ledger balance");
+            //if (LedgerBalance > 0 || (!byPassLedgerBalance ?? false))
+            //    throw new InvalidAccountOperationException("An account cannot be closed while it has a non-zero ledger balance");
 
             Status = AccountStatus.Closed;
             ClosedOn = DateTimeOffset.UtcNow;
