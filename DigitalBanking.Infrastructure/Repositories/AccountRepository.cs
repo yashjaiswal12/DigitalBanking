@@ -14,7 +14,7 @@ namespace DigitalBanking.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task AddAccount(Account account, CancellationToken cancellationToken)
+        public async Task AddAccountAsync(Account account, CancellationToken cancellationToken)
         {
             await _context.Accounts.AddAsync(account, cancellationToken);
         }

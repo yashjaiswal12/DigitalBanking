@@ -30,10 +30,10 @@ namespace DigitalBanking.WebAPI.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchCustomerAsync([FromQuery] SearchCustomerQuery request, CancellationToken cancellationToken)
         {
-            var response = await _mediator.Send(request, cancellationToken);
+            var result = await _mediator.Send(request, cancellationToken);
             return Ok(new ApiResponse<List<Customer>>
             {
-                Data = response,
+                Data = result,
                 Message = "Customer found."
             });
         }

@@ -32,28 +32,27 @@ namespace DigitalBanking.Domain.Entities
         {
         }
 
-        private Account(Guid id, string accountNumber, Guid customerId, AccountType accountType, string currency,
-            decimal initialBalance, decimal minimumBalance, DateTimeOffset createdOn, string createdBy)
+        private Account(string accountNumber, Guid customerId, AccountType accountType, string currency,
+            decimal initialBalance, string createdBy)
         {
-            ValidateIdentity(id);
             ValidateAccountNumber(accountNumber);
             ValidateCustomerId(customerId);
             ValidateCurrencyCode(currency);
             ValidateAccountType(accountType);
-            ValidateBalances(initialBalance, minimumBalance);
+            ValidateBalances(initialBalance);
             ValidateCreatedBy(createdBy);
 
-            Id = id; 
+            Id = Guid.NewGuid();
             AccountNumber = accountNumber;
             CustomerId = customerId;
             Type = accountType;
             Currency = currency.ToUpperInvariant();
             LedgerBalance = initialBalance;
             AvailableBalance = initialBalance;
-            MinimumBalance = minimumBalance;
+            MinimumBalance = 1000;
 
             Status = AccountStatus.Pending;
-            CreatedOn = createdOn;
+            CreatedOn = DateTimeOffset.UtcNow;
             CreatedBy = createdBy;
 
             OpenedOn = null;
@@ -65,10 +64,10 @@ namespace DigitalBanking.Domain.Entities
 
         #region Behaviors
 
-        public static Account Create(Guid id, string accountNumber, Guid customerId, AccountType accountType, string currency,
-            decimal initialBalance, decimal minimumBalance, DateTimeOffset createdOn, string createdBy)
+        public static Account Create(string accountNumber, Guid customerId, AccountType accountType, string currency,
+            decimal initialBalance, string createdBy)
         {
-            return new Account(id, accountNumber, customerId, accountType, currency, initialBalance, minimumBalance, createdOn, createdBy);
+            return new Account(accountNumber, customerId, accountType, currency, initialBalance, createdBy);
         }
 
         public void Credit(decimal amount, AccountStatus status)
@@ -96,18 +95,18 @@ namespace DigitalBanking.Domain.Entities
             AvailableBalance = resultingBalance;
         }
 
-        public void Activate(DateTimeOffset activatedOn)
+        public void Activate()
         {
             if (Status != AccountStatus.Pending)
                 throw new InvalidAccountStatusException($"Account cannot be activated from status {Status}");
 
             Status = AccountStatus.Active;
-            CreatedOn = activatedOn;
+            OpenedOn = DateTimeOffset.UtcNow;
             FrozenOn = null;
             ClosedOn = null;
         }
 
-        public void Close(DateTimeOffset closedOn)
+        public void Close()
         {
             if (Status == AccountStatus.Closed)
                 throw new AccountAlreadyClosedException();
@@ -119,11 +118,11 @@ namespace DigitalBanking.Domain.Entities
                 throw new InvalidAccountOperationException("An account cannot be closed while it has a non-zero ledger balance");
 
             Status = AccountStatus.Closed;
-            ClosedOn = closedOn;
+            ClosedOn = DateTimeOffset.UtcNow;
             FrozenOn = null;
         }
 
-        public void Freeze(DateTimeOffset dateTimeOffset)
+        public void Freeze()
         {
             if (Status == AccountStatus.Closed)
                 throw new AccountAlreadyClosedException();
@@ -135,7 +134,7 @@ namespace DigitalBanking.Domain.Entities
                 throw new InvalidAccountStatusException($"Account cannot be frozen from status {Status}");
 
             Status = AccountStatus.Frozen;
-            FrozenOn = dateTimeOffset;
+            FrozenOn = DateTimeOffset.UtcNow;
         }
 
         public void Unfreeze()
@@ -168,22 +167,13 @@ namespace DigitalBanking.Domain.Entities
                 throw new InvalidAccountOperationException("Payment options are only allowed on active account");
         }
 
-        private static void ValidateBalances(decimal initialBalance, decimal minimumBalance)
+        private static void ValidateBalances(decimal initialBalance)
         {
             if (initialBalance < 0)
                 throw new ArgumentOutOfRangeException(nameof(initialBalance), "Initial balance cannot be negative");
 
-            if (minimumBalance < 0)
-                throw new ArgumentOutOfRangeException(nameof(minimumBalance), "Minimum balance cannot be negative");
-
-            if (initialBalance < minimumBalance)
-                throw new ArgumentOutOfRangeException(nameof(minimumBalance), "Initial balance cannot be less than minimum balance");
-        }
-
-        private static void ValidateIdentity(Guid id)
-        {
-            if (id == Guid.Empty)
-                throw new ArgumentException("Account ID cannot be empty", nameof(id));
+            if (initialBalance < 1000)
+                throw new ArgumentOutOfRangeException(nameof(initialBalance), "Initial balance cannot be less than minimum balance");
         }
 
         private static void ValidateAccountNumber(string accountNumber)

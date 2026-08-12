@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Accounts\Commands\UnfreezeAccount\" />
     <Folder Include="Features\Authentication\DTOs\" />
   </ItemGroup>
 
