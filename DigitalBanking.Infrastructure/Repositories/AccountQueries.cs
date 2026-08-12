@@ -34,12 +34,12 @@ namespace DigitalBanking.Infrastructure.Repositories
                 query = query.Where(x => x.Type == searchCriteria.Type.Value);
 
             var totalCount = query.CountAsync(cancellationToken);
-            var skip = (searchCriteria.PageNumber - 1) * searchCriteria.PageSize ?? 0;
+            var skip = (searchCriteria.PageNumber - 1) * searchCriteria.PageSize;
 
             var items = query.OrderBy(x => x.AccountNumber)
                 .ThenBy(x => x.Id)
                 .Skip(skip)
-                .Take(searchCriteria.PageSize ?? 0)
+                .Take(searchCriteria.PageSize)
                 .Select(x => new Account
                 {
                     Id = x.Id,

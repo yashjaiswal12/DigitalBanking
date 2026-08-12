@@ -9,7 +9,7 @@ namespace DigitalBanking.Application.Features.Accounts.DTOs
         public string? Currency { get; set; }
         public AccountType? Type { get; set; }
         public AccountStatus? Status { get; set; }
-        public int? PageSize { get; set; }
-        public int? PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
     }
 }
