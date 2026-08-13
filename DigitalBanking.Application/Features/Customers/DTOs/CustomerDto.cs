@@ -1,6 +1,6 @@
 ﻿namespace DigitalBanking.Application.Features.Customers.DTOs
 {
-    public class Customer
+    public class CustomerDto
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;

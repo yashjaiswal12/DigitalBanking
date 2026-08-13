@@ -32,7 +32,7 @@ namespace DigitalBanking.WebAPI.Controllers
             var request = new GetAccountByIdQuery { AccountId = accountId };
             var result = await _mediator.Send(request, cancellationToken);
 
-            return Ok(new ApiResponse<Account>
+            return Ok(new ApiResponse<AccountDto>
             {
                 Data = result,
                 Message = "Account retrieved successfully"
@@ -43,7 +43,7 @@ namespace DigitalBanking.WebAPI.Controllers
         public async Task<IActionResult> SearchAccountsAsync([FromQuery] SearchAccountsQuery request, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(request, cancellationToken);
-            return Ok(new ApiResponse<List<Account>>
+            return Ok(new ApiResponse<List<AccountDto>>
             {
                 Data = result,
                 Message = "Retrieved account list with given search criteria"
@@ -54,11 +54,14 @@ namespace DigitalBanking.WebAPI.Controllers
         public async Task<IActionResult> CreateAccountAsync([FromBody] CreateAccountCommand request, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(request, cancellationToken);
-            return Ok(new ApiResponse<Guid>
-            {
-                Data = result,
-                Message = "Account created successfully"
-            });
+            return CreatedAtAction(
+                nameof(CreateAccountAsync),
+                new { accountId = result },
+                new ApiResponse<Guid>
+                {
+                    Data = result,
+                    Message = "Account created successfully"
+                });
         }
 
         [HttpPost("{accountId:guid}/activate")]

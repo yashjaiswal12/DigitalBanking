@@ -22,7 +22,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.FreezeAccount
         }
 
         [Fact]
-        public async Task Should_Return_True_If_Activated()
+        public async Task Should_Freeze_Account()
         {
             // Arrange
             var accountId = Guid.NewGuid();
@@ -46,7 +46,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.FreezeAccount
         }
 
         [Fact]
-        public void Should_Throw_Error_If_AccountNotFound()
+        public void Should_Throw_When_Account_Not_Found()
         {
             // Arrange
             var accountId = Guid.NewGuid();
@@ -64,14 +64,14 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.FreezeAccount
         }
 
         [Fact]
-        public void Should_Throw_Error_If_InvalidAccountStatus()
+        public void Should_Throw_When_Account_Is_Pending()
         {
             // Arrange
             var accountId = Guid.NewGuid();
             var customerId = Guid.NewGuid();
             var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000, "test-created-by");
 
-            _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync((Account?)null);
+            _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync(account);
             _mockWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
 
             var command = new FreezeAccountCommand { AccountId = accountId };

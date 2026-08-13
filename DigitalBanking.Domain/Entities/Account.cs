@@ -70,19 +70,19 @@ namespace DigitalBanking.Domain.Entities
             return new Account(accountNumber, customerId, accountType, currency, initialBalance, createdBy);
         }
 
-        public void Credit(decimal amount, AccountStatus status)
+        public void Credit(decimal amount)
         {
             ValidateAmount(amount);
-            EnsureAccountCanProcessPayment(status);
+            EnsureAccountCanProcessPayment();
 
             LedgerBalance += amount;
             AvailableBalance += amount;
         }
 
-        public void Debit(decimal amount, AccountStatus status)
+        public void Debit(decimal amount)
         {
             ValidateAmount(amount);
-            EnsureAccountCanProcessPayment(status);
+            EnsureAccountCanProcessPayment();
 
             if (amount > AvailableBalance)
                 throw new InsufficientBalanceException();
@@ -114,7 +114,8 @@ namespace DigitalBanking.Domain.Entities
             if (Status != AccountStatus.Active && Status != AccountStatus.Frozen)
                 throw new InvalidAccountStatusException($"Account cannot be closed from status {Status}");
 
-            //if (LedgerBalance > 0 || (!byPassLedgerBalance ?? false))
+            // Need to uncomment below and write a logic for settlement and closure of an account
+            //if (LedgerBalance != 0)
             //    throw new InvalidAccountOperationException("An account cannot be closed while it has a non-zero ledger balance");
 
             Status = AccountStatus.Closed;
@@ -151,19 +152,19 @@ namespace DigitalBanking.Domain.Entities
 
         private static void ValidateAmount(decimal amount)
         {
-            if (amount < 0)
+            if (amount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(amount), "Amount cannot be negative");
         }
 
-        private static void EnsureAccountCanProcessPayment(AccountStatus accountStatus)
+        private void EnsureAccountCanProcessPayment()
         {
-            if (accountStatus == AccountStatus.Closed)
+            if (Status == AccountStatus.Closed)
                 throw new AccountAlreadyClosedException();
 
-            if (accountStatus == AccountStatus.Frozen)
+            if (Status == AccountStatus.Frozen)
                 throw new InvalidAccountOperationException("Payment options are not allowed on frozen account");
 
-            if (accountStatus != AccountStatus.Active)
+            if (Status != AccountStatus.Active)
                 throw new InvalidAccountOperationException("Payment options are only allowed on active account");
         }
 

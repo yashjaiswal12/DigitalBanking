@@ -14,7 +14,7 @@ namespace DigitalBanking.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<List<Account>> SearchAccountsAsync(SearchAccountCriteria searchCriteria, CancellationToken cancellationToken)
+        public Task<List<AccountDto>> SearchAccountsAsync(SearchAccountCriteria searchCriteria, CancellationToken cancellationToken)
         {
             var query = _context.Accounts.AsNoTracking();
 
@@ -25,7 +25,10 @@ namespace DigitalBanking.Infrastructure.Repositories
                 query = query.Where(x => x.AccountNumber == searchCriteria.AccountNumber);
 
             if (!string.IsNullOrWhiteSpace(searchCriteria.Currency))
-                query = query.Where(x => x.Currency == searchCriteria.Currency);
+            {
+                var normalizedCurrency = searchCriteria.Currency.ToUpperInvariant();
+                query = query.Where(x => x.Currency == normalizedCurrency);
+            }
 
             if (searchCriteria.Status.HasValue)
                 query = query.Where(x => x.Status == searchCriteria.Status.Value);
@@ -33,14 +36,15 @@ namespace DigitalBanking.Infrastructure.Repositories
             if (searchCriteria.Type.HasValue)
                 query = query.Where(x => x.Type == searchCriteria.Type.Value);
 
-            var totalCount = query.CountAsync(cancellationToken);
+            // Used for future PagedResult feature
+            //var totalCount = await query.CountAsync(cancellationToken);
             var skip = (searchCriteria.PageNumber - 1) * searchCriteria.PageSize;
 
             var items = query.OrderBy(x => x.AccountNumber)
                 .ThenBy(x => x.Id)
                 .Skip(skip)
                 .Take(searchCriteria.PageSize)
-                .Select(x => new Account
+                .Select(x => new AccountDto
                 {
                     Id = x.Id,
                     AccountNumber = x.AccountNumber,
@@ -51,7 +55,8 @@ namespace DigitalBanking.Infrastructure.Repositories
                     AvailableBalance = x.AvailableBalance,
                     LedgerBalance = x.LedgerBalance,
                     MinimumBalance = x.MinimumBalance,
-                    OpenedOn = x.OpenedOn
+                    OpenedOn = x.OpenedOn,
+                    RowVersion = Convert.ToBase64String(x.RowVersion)
                 }).ToListAsync(cancellationToken);
 
             return items;

@@ -2,7 +2,7 @@
 
 namespace DigitalBanking.Application.Features.Accounts.DTOs
 {
-    public class Account
+    public class AccountDto
     {
         public Guid Id { get; set; }
         public string AccountNumber { get; set; } = string.Empty;
@@ -14,5 +14,6 @@ namespace DigitalBanking.Application.Features.Accounts.DTOs
         public decimal AvailableBalance { get; set; }
         public decimal MinimumBalance { get; set; }
         public DateTimeOffset? OpenedOn { get; set; }
+        public string RowVersion { get; set; } = string.Empty;
     }
 }

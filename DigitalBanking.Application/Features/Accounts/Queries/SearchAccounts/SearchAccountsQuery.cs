@@ -4,7 +4,7 @@ using MediatR;
 
 namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
 {
-    public class SearchAccountsQuery : IRequest<List<Account>>
+    public class SearchAccountsQuery : IRequest<List<AccountDto>>
     {
         public string? AccountNumber { get; set; }
         public Guid? CustomerId { get; set; }

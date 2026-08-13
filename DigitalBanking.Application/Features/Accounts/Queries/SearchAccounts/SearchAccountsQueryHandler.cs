@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
 {
-    public class SearchAccountsQueryHandler : IRequestHandler<SearchAccountsQuery, List<Account>>
+    public class SearchAccountsQueryHandler : IRequestHandler<SearchAccountsQuery, List<AccountDto>>
     {
         private readonly IAccountQueries _accountQueries;
         private readonly ILogger<SearchAccountsQueryHandler> _logger;
@@ -16,7 +16,7 @@ namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
             _logger = logger;
         }
 
-        public async Task<List<Account>> Handle(SearchAccountsQuery request, CancellationToken cancellationToken)
+        public async Task<List<AccountDto>> Handle(SearchAccountsQuery request, CancellationToken cancellationToken)
         {
             var searchAccountCriteria = new SearchAccountCriteria
             {

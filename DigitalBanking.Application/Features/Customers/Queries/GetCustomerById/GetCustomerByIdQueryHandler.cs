@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
 {
-    public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, Customer>
+    public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, CustomerDto>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ILogger<GetCustomerByIdQueryHandler> _logger;
@@ -17,7 +17,7 @@ namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
             _logger = logger;
         }
 
-        public async Task<Customer> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
+        public async Task<CustomerDto> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
         {
             var customer = await _customerRepository.GetCustomerByIdAsync(request.Id, cancellationToken);
             if (customer is null)
@@ -25,7 +25,7 @@ namespace DigitalBanking.Application.Features.Customers.Queries.GetCustomerById
 
             _logger.Log(LogLevel.Information, "Customer with {id} retrieved sucessfully", request.Id);
 
-            return new Customer
+            return new CustomerDto
             {
                 Id = customer.Id,
                 FirstName = customer.FirstName,

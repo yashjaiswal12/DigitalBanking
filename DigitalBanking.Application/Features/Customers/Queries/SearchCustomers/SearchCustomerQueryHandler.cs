@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
 {
-    public class SearchCustomerQueryHandler : IRequestHandler<SearchCustomerQuery, List<Customer>>
+    public class SearchCustomerQueryHandler : IRequestHandler<SearchCustomerQuery, List<CustomerDto>>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ILogger<SearchCustomerQueryHandler> _logger;
@@ -17,7 +17,7 @@ namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
             _logger = logger;
         }
 
-        public async Task<List<Customer>> Handle(SearchCustomerQuery request, CancellationToken cancellationToken)
+        public async Task<List<CustomerDto>> Handle(SearchCustomerQuery request, CancellationToken cancellationToken)
         {
             var customers = await _customerRepository.SearchCustomerAsync(request.SearchTerm, request.IsActive, cancellationToken);
 
@@ -26,7 +26,7 @@ namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
 
             _logger.Log(LogLevel.Information, "Retrieved relevant customers list based on the search term");
 
-            return customers.Select(customer => new Customer() 
+            return customers.Select(customer => new CustomerDto() 
             { 
                 Id = customer.Id,
                 FirstName = customer.FirstName,

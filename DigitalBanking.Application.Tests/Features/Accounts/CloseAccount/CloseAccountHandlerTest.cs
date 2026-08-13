@@ -1,5 +1,4 @@
-﻿using DigitalBanking.Application.Features.Accounts.Commands.ActivateAccount;
-using DigitalBanking.Application.Features.Accounts.Commands.CloseAccount;
+﻿using DigitalBanking.Application.Features.Accounts.Commands.CloseAccount;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Domain.Entities;
 using DigitalBanking.Domain.Exceptions;
@@ -22,7 +21,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CloseAccount
         }
 
         [Fact]
-        public async Task Should_Return_True_If_Closed()
+        public async Task Should_Close_Account()
         {
             // Arrange
             var accountId = Guid.NewGuid();
@@ -46,7 +45,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CloseAccount
         }
 
         [Fact]
-        public void Should_Throw_Error_If_AccountNotFound()
+        public void Should_Throw_When_Account_Not_Found()
         {
             // Arrange
             var accountId = Guid.NewGuid();
@@ -64,18 +63,17 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CloseAccount
         }
 
         [Fact]
-        public void Should_Throw_Error_If_InvalidAccountStatus()
+        public void Should_Throw_When_Account_Is_Pending()
         {
             // Arrange
             var accountId = Guid.NewGuid();
             var customerId = Guid.NewGuid();
             var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000, "test-created-by");
 
-            _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync((Account?)null);
+            _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync(account);
             _mockWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
 
             var command = new CloseAccountCommand { AccountId = accountId };
-            account.Activate();
 
             // Act and Assert
             Assert.ThrowsAsync<InvalidAccountStatusException>(() => _handler.Handle(command, CancellationToken.None));

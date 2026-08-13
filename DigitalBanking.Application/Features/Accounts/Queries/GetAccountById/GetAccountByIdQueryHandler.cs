@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Accounts.Queries.GetAccountById
 {
-    public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, Account>
+    public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDto>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ILogger<GetAccountByIdQueryHandler> _logger;
@@ -17,14 +17,14 @@ namespace DigitalBanking.Application.Features.Accounts.Queries.GetAccountById
             _logger = logger;
         }
 
-        public async Task<Account> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AccountDto> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
         {
             var account = await _accountRepository.GetByIdAsync(request.AccountId, cancellationToken)
                 ?? throw new AccountNotFoundException();
 
             _logger.Log(LogLevel.Information, "Account information retrieved successfully");
 
-            return new Account
+            return new AccountDto
             {
                 Id = account.Id,
                 AccountNumber = account.AccountNumber,
@@ -35,7 +35,8 @@ namespace DigitalBanking.Application.Features.Accounts.Queries.GetAccountById
                 LedgerBalance = account.LedgerBalance,
                 AvailableBalance = account.AvailableBalance,
                 MinimumBalance = account.MinimumBalance,
-                OpenedOn = account.OpenedOn
+                OpenedOn = account.OpenedOn,
+                RowVersion = Convert.ToBase64String(account.RowVersion)
             };
         }
     }
