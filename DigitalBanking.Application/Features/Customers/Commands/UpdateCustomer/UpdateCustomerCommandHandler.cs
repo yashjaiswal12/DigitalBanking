@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
 {
-    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Customer>
+    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, CustomerDto>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +21,7 @@ namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
             _logger = logger;
         }
 
-        public async Task<Customer> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+        public async Task<CustomerDto> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
             var customer = await _customerRepository.GetByIdUpdateAsync(request.CustomerId, cancellationToken)
                 ?? throw new CustomerNotFoundException();
@@ -43,7 +43,7 @@ namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
 
             _logger.Log(LogLevel.Information, "Customer information with {id} updated sucessfully", request.CustomerId);
 
-            return new Customer
+            return new CustomerDto
             {
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,

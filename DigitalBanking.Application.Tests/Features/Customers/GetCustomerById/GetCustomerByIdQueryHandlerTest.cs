@@ -24,11 +24,10 @@ namespace DigitalBanking.Application.Tests.Features.Customers.GetCustomerById
         public async Task Should_Return_Customer_When_Exists()
         {
             // Arrange
-            var customerId = Guid.NewGuid();
             var customer = Customer.Create("fname", "lname", "test@gmail.com", "9876509879", "hash-password");
-            _mockRepository.Setup(x => x.GetCustomerByIdAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _mockRepository.Setup(x => x.GetCustomerByIdAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
 
-            var query = new GetCustomerByIdQuery() { Id = customerId };
+            var query = new GetCustomerByIdQuery() { Id = customer.Id };
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -39,7 +38,7 @@ namespace DigitalBanking.Application.Tests.Features.Customers.GetCustomerById
             result.LastName.Should().Be("lname");
             result.PhoneNumber.Should().Be("9876509879");
 
-            _mockRepository.Verify(x => x.GetCustomerByIdAsync(customerId, It.IsAny<CancellationToken>()), Times.Once);
+            _mockRepository.Verify(x => x.GetCustomerByIdAsync(customer.Id, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]

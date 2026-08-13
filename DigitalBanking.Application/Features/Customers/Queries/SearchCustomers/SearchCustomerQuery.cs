@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DigitalBanking.Application.Features.Customers.Queries.SearchCustomers
 {
-    public class SearchCustomerQuery : IRequest<List<Customer>>
+    public class SearchCustomerQuery : IRequest<List<CustomerDto>>
     {
         public string SearchTerm { get; init; } = string.Empty;
         //public int Page { get; init; }

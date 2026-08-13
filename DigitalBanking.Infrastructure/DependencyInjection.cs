@@ -1,10 +1,12 @@
 ﻿using DigitalBanking.Application.Interfaces.Common;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Application.Interfaces.Security;
+using DigitalBanking.Application.Interfaces.Services;
 using DigitalBanking.Infrastructure.Identities;
 using DigitalBanking.Infrastructure.Identities.Configuration;
 using DigitalBanking.Infrastructure.Persistence;
 using DigitalBanking.Infrastructure.Repositories;
+using DigitalBanking.Infrastructure.Services;
 using DigitalBanking.Infrastructure.Services.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,8 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IAccountQueries, AccountQueries>();
 
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -49,6 +53,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
             
             return services;
         }

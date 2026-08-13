@@ -73,6 +73,10 @@ try
 
     app.Run();
 }
+catch (HostAbortedException)
+{
+    // Expected during EF Core design-time operations.
+}
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application terminated unexpectedly.");
