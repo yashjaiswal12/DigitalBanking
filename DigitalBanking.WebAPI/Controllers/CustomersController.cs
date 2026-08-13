@@ -24,16 +24,16 @@ namespace DigitalBanking.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        [ProducesResponseType(typeof(ApiResponse<List<Customer>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<CustomerDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [HttpGet("search")]
         public async Task<IActionResult> SearchCustomerAsync([FromQuery] SearchCustomerQuery request, CancellationToken cancellationToken)
         {
-            var response = await _mediator.Send(request, cancellationToken);
-            return Ok(new ApiResponse<List<Customer>>
+            var result = await _mediator.Send(request, cancellationToken);
+            return Ok(new ApiResponse<List<CustomerDto>>
             {
-                Data = response,
+                Data = result,
                 Message = "Customer found."
             });
         }
@@ -44,7 +44,7 @@ namespace DigitalBanking.WebAPI.Controllers
             var request = new GetCustomerByIdQuery() { Id = id };
             var result = await _mediator.Send(request, cancellationToken);
 
-            return Ok(new ApiResponse<Customer>(){
+            return Ok(new ApiResponse<CustomerDto>(){
                 Data = result,
                 Message = "Customer retrieved successfully."
             });
@@ -56,7 +56,7 @@ namespace DigitalBanking.WebAPI.Controllers
             request.CustomerId = id;
             var result = await _mediator.Send(request, cancellationToken);
 
-            return Ok(new ApiResponse<Customer>
+            return Ok(new ApiResponse<CustomerDto>
             {
                 Data = result,
                 Message = "Customer information updated successfully."

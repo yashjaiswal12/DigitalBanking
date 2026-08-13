@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DigitalBanking.Application.Features.Customers.Commands.UpdateCustomer
 {
-    public class UpdateCustomerCommand : IRequest<Customer>
+    public class UpdateCustomerCommand : IRequest<CustomerDto>
     {
         public Guid CustomerId { get; set; }
         public string FirstName { get; set; } = string.Empty;

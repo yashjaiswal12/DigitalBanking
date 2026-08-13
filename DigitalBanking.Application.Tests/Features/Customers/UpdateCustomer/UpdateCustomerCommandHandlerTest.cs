@@ -27,16 +27,15 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
         public async Task Should_Update_Customer_Data()
         {
             // Arrange
-            var customerId = Guid.NewGuid();
             var utcNow = new DateTime(2026, 12, 1, 12, 0, 0, DateTimeKind.Utc);
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "phone", "password-hash");
 
-            _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
+            _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
             var command = new UpdateCustomerCommand()
             {
-                CustomerId = customerId,
+                CustomerId = customer.Id,
                 FirstName = "newFirstName",
                 LastName = "newLastName",
                 Email = "newEmail@gmail.com",
@@ -50,7 +49,7 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
             result.Email.Should().Be("newemail@gmail.com");
             result.PhoneNumber.Should().Be(command.Phone);
 
-            _mockCustomerRepository.Verify(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>()), Times.Once);
+            _mockCustomerRepository.Verify(x => x.GetByIdUpdateAsync(customer.Id, It.IsAny<CancellationToken>()), Times.Once);
             _mockUnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -87,7 +86,7 @@ namespace DigitalBanking.Application.Tests.Features.Customers.UpdateCustomer
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "phone", "password-hash");
 
             _mockCustomerRepository.Setup(x => x.GetByIdUpdateAsync(customerId, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
-            _mockCustomerRepository.Setup(x => x.CustomerExistsByEmailAsync(customer.Email, customerId, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            _mockCustomerRepository.Setup(x => x.CustomerExistsByEmailAsync(customer.Email, customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
             _mockUnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(0);
 
             var command = new UpdateCustomerCommand()
