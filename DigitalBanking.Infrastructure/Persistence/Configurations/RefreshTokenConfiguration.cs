@@ -14,7 +14,10 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.Property(x => x.CustomerId).IsRequired(true);
             entityTypeBuilder.Property(x => x.ExpiresOn).IsRequired(true);
 
-            entityTypeBuilder.HasOne<Customer>().WithMany().HasForeignKey(x => x.CustomerId);
+            entityTypeBuilder.HasIndex(x => x.Token).IsUnique();
+            entityTypeBuilder.HasIndex(x => x.CustomerId);
+
+            entityTypeBuilder.HasOne<Customer>().WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

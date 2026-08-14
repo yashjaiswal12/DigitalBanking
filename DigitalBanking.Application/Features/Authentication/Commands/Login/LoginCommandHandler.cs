@@ -30,13 +30,22 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
         {
             var customerEmailExists = await _customerRepository.CustomerExistsByEmailAsync(request.Email, null, cancellationToken);
             if (!customerEmailExists)
-                throw new InvalidCustomerException(request.Email);
+                throw new InvalidCredentialsException();
 
             var customer = await _customerRepository.GetCustomerByEmailAsync(request.Email, cancellationToken);
+
+            if (customer.IsLocked)
+                throw new AccountLockedException("Account is locked. Try again after sometime.");
             
             bool isValidPassword = _passwordHasher.Verify(request.Password, customer.PasswordHash);
             if (!isValidPassword)
-                throw new InvalidCustomerException(request.Email);
+            {
+                customer.RecordFailedLogin();
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                throw new InvalidCredentialsException();
+            }
 
             if (!customer.IsActive)
                 throw new DomainException("Customer is InActive");
@@ -49,6 +58,8 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
                 await _refreshTokenRepository.AddTokenAsync(refreshToken, cancellationToken);
             else
                 existingRefreshToken.UpdateRefreshToken(refreshToken.Token, refreshToken.ExpiresOn);
+
+            customer.RecordSuccessfulLogin();
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -26,7 +26,8 @@ namespace DigitalBanking.Infrastructure.Repositories
 
         public async Task<RefreshToken?> GetRefreshTokenByCustomerIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.RefreshTokens.FirstOrDefaultAsync(x => x.CustomerId == id, cancellationToken);
+            return await _context.RefreshTokens.Where(x => x.CustomerId == id && !x.IsRevoked)
+                .OrderByDescending(x => x.RevokedOn).FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<List<RefreshToken>> GetRefreshTokensByCustomerIdAsync(Guid id, CancellationToken cancellationToken)

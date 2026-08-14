@@ -1,8 +1,10 @@
 ﻿using DigitalBanking.Application;
 using DigitalBanking.Infrastructure;
 using DigitalBanking.WebAPI.Middlewares;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 namespace DigitalBanking.WebAPI
 {
@@ -12,6 +14,47 @@ namespace DigitalBanking.WebAPI
         {
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
+
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    await context.HttpContext.Response.WriteAsJsonAsync(
+                        new { message = "Try after some time. Too many requests" }, 
+                        cancellationToken);
+                };
+
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,string>(context =>
+                {
+                    var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 1000,
+                        QueueLimit = 0,
+                        Window = TimeSpan.FromMinutes(1)
+                    });
+                });
+
+                options.AddPolicy("request-limit-per-api", context =>
+                {
+                    var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 100,
+                        QueueLimit = 0,
+                        Window = TimeSpan.FromMinutes(1)
+                    });
+                });
+
+                options.AddFixedWindowLimiter("login-window", fixedWindow =>
+                {
+                    fixedWindow.PermitLimit = 5;
+                    fixedWindow.QueueLimit = 0;
+                    fixedWindow.Window = TimeSpan.FromMinutes(1);
+                });
+            });
 
             services.AddHealthChecks();
 
