@@ -22,11 +22,20 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.Property(x => x.UpdatedBy).HasMaxLength(100);
             entityTypeBuilder.Property(x => x.DeletedBy).HasMaxLength(100);
 
+            entityTypeBuilder.Property(x => x.Role).HasConversion<int>().IsRequired();
+            entityTypeBuilder.Property(x => x.SecurityStamp).IsRequired();
+            entityTypeBuilder.Property(x => x.TokenVersion).IsRequired();
+            entityTypeBuilder.Property(x => x.FailedLoginAttempts).IsRequired();
+            entityTypeBuilder.Property(x => x.IsLocked).IsRequired();
+            entityTypeBuilder.Property(x => x.LastLoginAt);
+            entityTypeBuilder.Property(x => x.LastFailedLoginAt);
+
             entityTypeBuilder.HasIndex(x => x.Email).IsUnique(true);
             entityTypeBuilder.HasIndex(x => x.PhoneNumber).IsUnique(true);
             entityTypeBuilder.HasIndex(x => x.LastName);
             entityTypeBuilder.HasIndex(x => x.CreatedAtUtc);
             entityTypeBuilder.HasIndex(x => new {x.IsDeleted, x.IsActive, x.CreatedAtUtc});
+            entityTypeBuilder.HasIndex(x => x.Role);
 
             entityTypeBuilder.HasQueryFilter(x => !x.IsDeleted);
 

@@ -1,4 +1,5 @@
-﻿using DigitalBanking.Application.Interfaces.Common;
+﻿using DigitalBanking.Application.Authorization;
+using DigitalBanking.Application.Interfaces.Common;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Application.Interfaces.Security;
 using DigitalBanking.Application.Interfaces.Services;
@@ -33,8 +34,30 @@ namespace DigitalBanking.Infrastructure
                         ValidAudience = configuration["Jwt:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]))
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = async context =>
+                        {
+                            var validator = context.HttpContext.RequestServices.GetRequiredService<JwtTokenEvents>();
+                            await validator.ValidateJwtToken(context);
+                        }
+                    };
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Permissions.ManageAccounts, policy => policy.RequireClaim("permission", Permissions.ManageAccounts));
+                options.AddPolicy(Permissions.ViewAccounts, policy => policy.RequireClaim("permission", Permissions.ViewAccounts));
+                options.AddPolicy(Permissions.FreezeAccounts, policy => policy.RequireClaim("permission", Permissions.FreezeAccounts));
+
+                options.AddPolicy(Permissions.ViewAuditLogs, policy => policy.RequireClaim("permission", Permissions.ViewAuditLogs));
+
+                options.AddPolicy(Permissions.ManageCustomers, policy => policy.RequireClaim("permission", Permissions.ManageCustomers));
+                options.AddPolicy(Permissions.ViewCustomers, policy => policy.RequireClaim("permission", Permissions.ViewCustomers));
+
+                options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            });
 
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -44,6 +67,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountQueries, AccountQueries>();
+            services.AddScoped<JwtTokenEvents>();
 
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
