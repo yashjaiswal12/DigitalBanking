@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using DigitalBanking.Application.Authorization;
 using DigitalBanking.Application.Features.Accounts.Commands.ActivateAccount;
 using DigitalBanking.Application.Features.Accounts.Commands.CloseAccount;
 using DigitalBanking.Application.Features.Accounts.Commands.CreateAccount;
@@ -26,6 +27,7 @@ namespace DigitalBanking.WebAPI.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Policy = Permissions.ViewAccounts)]
         [HttpGet("{accountId:guid}")]
         public async Task<IActionResult> GetAccountsByIdAsync([FromRoute] Guid accountId, CancellationToken cancellationToken)
         {
@@ -39,6 +41,7 @@ namespace DigitalBanking.WebAPI.Controllers
             });
         }
 
+        [Authorize(Policy = Permissions.ViewAccounts)]
         [HttpGet]
         public async Task<IActionResult> SearchAccountsAsync([FromQuery] SearchAccountsQuery request, CancellationToken cancellationToken)
         {
@@ -50,20 +53,19 @@ namespace DigitalBanking.WebAPI.Controllers
             });
         }
 
+        [Authorize(Policy = Permissions.ManageAccounts)]
         [HttpPost]
         public async Task<IActionResult> CreateAccountAsync([FromBody] CreateAccountCommand request, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(request, cancellationToken);
-            return CreatedAtAction(
-                nameof(CreateAccountAsync),
-                new { accountId = result },
-                new ApiResponse<Guid>
-                {
-                    Data = result,
-                    Message = "Account created successfully"
-                });
+            return Ok(new ApiResponse<Guid>
+            {
+                Data = result,
+                Message = "Account created successfully"
+            });
         }
 
+        [Authorize(Policy = Permissions.ManageAccounts)]
         [HttpPost("{accountId:guid}/activate")]
         public async Task<IActionResult> ActivateAccountAsync([FromRoute] Guid accountId, CancellationToken cancellationToken)
         {
@@ -72,6 +74,7 @@ namespace DigitalBanking.WebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = Permissions.FreezeAccounts)]
         [HttpPost("{accountId:guid}/freeze")]
         public async Task<IActionResult> FreezeAccountAsync([FromRoute] Guid accountId, CancellationToken cancellationToken)
         {
@@ -80,6 +83,7 @@ namespace DigitalBanking.WebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = Permissions.ManageAccounts)]
         [HttpPost("{accountId:guid}/close")]
         public async Task<IActionResult> CloseAccountAsync([FromRoute] Guid accountId, CancellationToken cancellationToken)
         {

@@ -1,10 +1,13 @@
 ﻿using DigitalBanking.Domain.Common;
+using DigitalBanking.Domain.Enums.Security;
 using DigitalBanking.Domain.Exceptions;
 
 namespace DigitalBanking.Domain.Entities
 {
     public class Customer : AuditableEntity
     {
+        private const int MaxFailedLoginAttempts = 5;
+
         #region Properties
 
         public string FirstName { get; private set; } = string.Empty;
@@ -13,6 +16,13 @@ namespace DigitalBanking.Domain.Entities
         public string Email { get; private set; } = string.Empty;
         public string PasswordHash { get; private set; } = string.Empty;
         public bool IsActive { get; private set; }
+        public Roles Role { get; private set; } = Roles.Customer;
+        public string SecurityStamp { get; private set; } = Guid.NewGuid().ToString();
+        public int TokenVersion { get; private set; } = 1;
+        public int FailedLoginAttempts { get; private set; } = 0;
+        public bool IsLocked { get; private set; } = false;
+        public DateTime? LastLoginAt { get; private set; }
+        public DateTime? LastFailedLoginAt { get; private set; }
         public byte[] RowVersion { get; private set; } = [];
 
         #endregion
@@ -38,6 +48,42 @@ namespace DigitalBanking.Domain.Entities
         #endregion
 
         #region Behaviors
+
+        public void UpdateTokenVersion()
+        {
+            TokenVersion++;
+        }
+
+        public void RecordSuccessfulLogin()
+        {
+            FailedLoginAttempts = 0;
+            LastLoginAt = DateTime.UtcNow;
+        }
+
+        public void RecordFailedLogin()
+        {
+            FailedLoginAttempts++;
+            LastFailedLoginAt = DateTime.UtcNow;
+
+            if (FailedLoginAttempts >= MaxFailedLoginAttempts)
+                LockAccount();
+        }
+
+        public void LockAccount()
+        {
+            IsLocked = true;
+        }
+
+        public void UnlockAccount()
+        {
+            IsLocked = false;
+            FailedLoginAttempts = 0;
+        }
+        
+        public void UpdateSecurityStamp()
+        {
+            SecurityStamp = Guid.NewGuid().ToString();
+        }
 
         public void Activate()
         {
@@ -87,6 +133,9 @@ namespace DigitalBanking.Domain.Entities
 
             ValidatePassword(updatedHash);
             PasswordHash = updatedHash;
+            
+            UpdateSecurityStamp();
+            UpdateTokenVersion();
         }
 
         public static Customer Create(string firstName, string lastName, string email, string phone, string passwordHash)

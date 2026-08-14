@@ -36,6 +36,8 @@ try
 
     app.UseExceptionHandler();
 
+    app.UseRateLimiter();
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {

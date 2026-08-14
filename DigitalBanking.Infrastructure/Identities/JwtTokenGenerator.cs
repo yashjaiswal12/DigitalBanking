@@ -1,4 +1,5 @@
-﻿using DigitalBanking.Application.Interfaces.Security;
+﻿using DigitalBanking.Application.Authorization;
+using DigitalBanking.Application.Interfaces.Security;
 using DigitalBanking.Domain.Entities;
 using DigitalBanking.Infrastructure.Identities.Configuration;
 using Microsoft.Extensions.Options;
@@ -27,11 +28,18 @@ namespace DigitalBanking.Infrastructure.Identities
             var claims = new List<Claim>() 
             { 
                 new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.GivenName, customer.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, customer.LastName),
-                new Claim(JwtRegisteredClaimNames.Email, customer.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, customer.Role.ToString()),
+                new Claim("security_stamp", customer.SecurityStamp),
+                new Claim("token_version", customer.TokenVersion.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sid, Guid.NewGuid().ToString())
             };
+
+            var permissions = RolePermissions.GetPermissions(customer.Role);
+            foreach (var permission in permissions)
+            {
+                claims.Add(new Claim("permission", permission));
+            }
 
             var token = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,

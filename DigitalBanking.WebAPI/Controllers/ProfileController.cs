@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 
 namespace DigitalBanking.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ProfileController : ControllerBase
     {
         [HttpGet]
         public IActionResult GetProfile()
         {
-            var firstName = User.FindFirstValue(ClaimTypes.GivenName);
-            var lastName = User.FindFirstValue(ClaimTypes.Surname);
-            var email = User.FindFirstValue(ClaimTypes.Email);
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            var permissions = User.FindFirstValue("permission");
 
-            return Ok(new { firstName, lastName, email });
+            return Ok(new { userId, role, permissions });
         }
     }
 }
