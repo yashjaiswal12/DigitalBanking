@@ -16,7 +16,7 @@ namespace DigitalBanking.Infrastructure.Identities
 
         public async Task ValidateJwtToken(TokenValidatedContext context)
         {
-            var customerIdClaim = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var customerIdClaim = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var securityStamp = context.Principal?.FindFirst("security_stamp")?.Value;
             var tokenVersion = context.Principal?.FindFirst("token_version")?.Value;
 

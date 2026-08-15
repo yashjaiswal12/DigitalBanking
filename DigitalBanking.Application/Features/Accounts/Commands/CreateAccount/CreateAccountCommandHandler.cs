@@ -38,7 +38,7 @@ namespace DigitalBanking.Application.Features.Accounts.Commands.CreateAccount
 
             var accountNumber = await _accountNumberGenerator.GenerateAsync(cancellationToken);
             var account = Account.Create(accountNumber, request.CustomerId, request.Type, request.Currency, 
-                request.InitialBalance, _userService.UserId);
+                request.InitialBalance, _userService.UserId.ToString());
 
             await _accountRepository.AddAccountAsync(account, cancellationToken);
 

@@ -68,6 +68,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountQueries, AccountQueries>();
             services.AddScoped<JwtTokenEvents>();
+            services.AddScoped<IBeneficiaryRepository, BeneficiaryRepository>();
 
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

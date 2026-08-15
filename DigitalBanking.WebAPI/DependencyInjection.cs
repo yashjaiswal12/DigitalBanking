@@ -31,18 +31,18 @@ namespace DigitalBanking.WebAPI
                     var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                     return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 1000,
+                        PermitLimit = 100,
                         QueueLimit = 0,
                         Window = TimeSpan.FromMinutes(1)
                     });
                 });
 
-                options.AddPolicy("request-limit-per-api", context =>
+                options.AddPolicy("request-limit", context =>
                 {
                     var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                     return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100,
+                        PermitLimit = 1000,
                         QueueLimit = 0,
                         Window = TimeSpan.FromMinutes(1)
                     });

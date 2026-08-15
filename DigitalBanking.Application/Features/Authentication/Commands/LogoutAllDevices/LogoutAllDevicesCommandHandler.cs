@@ -25,7 +25,7 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.LogoutAllD
 
         public async Task Handle(LogoutAllDevicesCommand request, CancellationToken cancellationToken)
         {
-            var customer = await _customerRepository.GetByIdUpdateAsync(Guid.Parse(_currentUserService.UserId), cancellationToken)
+            var customer = await _customerRepository.GetByIdUpdateAsync(_currentUserService.UserId, cancellationToken)
                 ?? throw new CustomerNotFoundException();
 
             customer.UpdateTokenVersion();
