@@ -114,7 +114,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CreateAccount
             _mockAccNumGenerator.Setup(x => x.GenerateAsync(It.IsAny<CancellationToken>())).ReturnsAsync(accountNumber);
             _mockCurrentUserService.Setup(x => x.UserId).Returns(Guid.Empty);
 
-            var command = new CreateAccountCommand { CustomerId = customer.Id, Currency = "INR", InitialBalance = 1000, Type = Domain.Enums.AccountType.Savings };
+            var command = new CreateAccountCommand { CustomerId = customer.Id, Currency = "IN", InitialBalance = 1000, Type = Domain.Enums.AccountType.Savings };
 
             //Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));

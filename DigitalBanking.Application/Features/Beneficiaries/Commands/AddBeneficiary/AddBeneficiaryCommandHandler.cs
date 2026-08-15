@@ -34,9 +34,10 @@ namespace DigitalBanking.Application.Features.Beneficiaries.Commands.AddBenefici
             if (beneficiaryExists)
                 throw new DuplicateBeneficiaryException();
 
-            var account = await _accountRepository.GetByAccountNumberAsync(request.AccountNumber, cancellationToken);
+            var account = await _accountRepository.GetByAccountNumberAsync(request.AccountNumber, cancellationToken)
+                ?? throw new AccountNotFoundException();
 
-            if (account is null || account.Status != Domain.Enums.AccountStatus.Active)
+            if (account.Status != Domain.Enums.AccountStatus.Active)
                 throw new InvalidAccountStatusException("Account number does not exist");
 
             var beneficiary = Beneficiary.Create(customerId, account.Id, request.BeneficiaryName, request.BankCode, request.AccountNumber,

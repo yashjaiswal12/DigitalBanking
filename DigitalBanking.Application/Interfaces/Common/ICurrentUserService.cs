@@ -4,5 +4,6 @@
     {
         Guid UserId { get; }
         bool? IsAuthenticated { get; }
+        string? CustomerId { get; }
     }
 }

@@ -17,5 +17,7 @@ namespace DigitalBanking.Infrastructure.Services.Common
             ? customerId : throw new InvalidDataException("Customer id is invalid");
 
         public bool? IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated;
+
+        public string? CustomerId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }

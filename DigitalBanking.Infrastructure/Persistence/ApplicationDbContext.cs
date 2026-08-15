@@ -30,14 +30,14 @@ namespace DigitalBanking.Infrastructure.Persistence
                 switch (entity.State)
                 {
                     case EntityState.Added:
-                        entity.Entity.SetCreatedBy(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
+                        entity.Entity.SetCreatedBy(_currentUserService.CustomerId, _dateTimeProvider.UtcNow);
                         break;
                     case EntityState.Modified:
-                        entity.Entity.MarkAsUpdated(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
+                        entity.Entity.MarkAsUpdated(_currentUserService.CustomerId, _dateTimeProvider.UtcNow);
                         break;
                     case EntityState.Deleted:
                         entity.State = EntityState.Modified;
-                        entity.Entity.MarkAsDeleted(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
+                        entity.Entity.MarkAsDeleted(_currentUserService.CustomerId, _dateTimeProvider.UtcNow);
                         break;
                 }
             }
