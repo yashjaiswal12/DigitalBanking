@@ -13,6 +13,7 @@ namespace DigitalBanking.Infrastructure.Persistence
         public DbSet<Customer> Customers { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Beneficiary> Beneficiaries { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions, 
             IDateTimeProvider dateTimeProvider, ICurrentUserService currentUserService) : base(dbContextOptions)
@@ -29,14 +30,14 @@ namespace DigitalBanking.Infrastructure.Persistence
                 switch (entity.State)
                 {
                     case EntityState.Added:
-                        entity.Entity.SetCreatedBy(_currentUserService.UserId, _dateTimeProvider.UtcNow);
+                        entity.Entity.SetCreatedBy(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
                         break;
                     case EntityState.Modified:
-                        entity.Entity.MarkAsUpdated(_currentUserService.UserId, _dateTimeProvider.UtcNow);
+                        entity.Entity.MarkAsUpdated(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
                         break;
                     case EntityState.Deleted:
                         entity.State = EntityState.Modified;
-                        entity.Entity.MarkAsDeleted(_currentUserService.UserId, _dateTimeProvider.UtcNow);
+                        entity.Entity.MarkAsDeleted(_currentUserService.UserId.ToString(), _dateTimeProvider.UtcNow);
                         break;
                 }
             }

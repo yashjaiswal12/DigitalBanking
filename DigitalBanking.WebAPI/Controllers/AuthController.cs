@@ -1,4 +1,5 @@
-﻿using DigitalBanking.Application.Features.Authentication.Commands.Login;
+﻿using Asp.Versioning;
+using DigitalBanking.Application.Features.Authentication.Commands.Login;
 using DigitalBanking.Application.Features.Authentication.Commands.Logout;
 using DigitalBanking.Application.Features.Authentication.Commands.LogoutAllDevices;
 using DigitalBanking.Application.Features.Authentication.Commands.RefreshToken;
@@ -14,7 +15,8 @@ namespace DigitalBanking.WebAPI.Controllers
     [ApiController]
     [EnableRateLimiting("login-window")]
     [Authorize]
-    [Route("api/auth")]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;

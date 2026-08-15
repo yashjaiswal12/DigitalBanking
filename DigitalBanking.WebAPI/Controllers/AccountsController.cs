@@ -11,12 +11,14 @@ using DigitalBanking.WebAPI.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DigitalBanking.WebAPI.Controllers
 {
     [ApiController]
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/accounts")]
+    [EnableRateLimiting("request-limit")]
     [Authorize]
     public class AccountsController : ControllerBase
     {
