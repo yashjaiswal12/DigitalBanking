@@ -38,7 +38,10 @@ namespace DigitalBanking.Application.Features.Beneficiaries.Commands.AddBenefici
                 ?? throw new AccountNotFoundException();
 
             if (account.Status != Domain.Enums.AccountStatus.Active)
-                throw new InvalidAccountStatusException("Account number does not exist");
+                throw new InvalidAccountStatusException("Account is not active");
+
+            if (account.CustomerId == customerId)
+                throw new OwnAccountBeneficiaryException();
 
             var beneficiary = Beneficiary.Create(customerId, account.Id, request.BeneficiaryName, request.BankCode, request.AccountNumber,
                 request.BeneficiaryBankName);
