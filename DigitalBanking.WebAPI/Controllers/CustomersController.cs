@@ -9,6 +9,7 @@ using DigitalBanking.WebAPI.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DigitalBanking.WebAPI.Controllers
 {
@@ -16,6 +17,7 @@ namespace DigitalBanking.WebAPI.Controllers
     [Authorize]
     [ApiVersion("1")]
     [Route("api/v{version:apiVersion}/customers")]
+    [EnableRateLimiting("request-limit")]
     public class CustomersController : ControllerBase
     {
         private readonly IMediator _mediator;

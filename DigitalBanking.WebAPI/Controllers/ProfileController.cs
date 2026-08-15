@@ -5,6 +5,8 @@ using System.Security.Claims;
 
 namespace DigitalBanking.WebAPI.Controllers
 {
+    // Global rate limitter
+
     [ApiController]
     [Route("api/[controller]")]
     public class ProfileController : ControllerBase

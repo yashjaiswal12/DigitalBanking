@@ -2,7 +2,8 @@
 {
     public interface ICurrentUserService
     {
-        string? UserId { get; }
+        Guid UserId { get; }
         bool? IsAuthenticated { get; }
+        string? CustomerId { get; }
     }
 }

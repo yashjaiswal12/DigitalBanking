@@ -36,7 +36,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CreateAccount
             // Arrange
             var customer = Customer.Create("fname", "lname", "email@gmail.com", "0987654321", "tmp-pswd");
             var accountNumber = "123456789012";
-            var userId = "user1";
+            var userId = Guid.NewGuid();
 
             _mockCustomerRepo.Setup(x => x.GetCustomerByIdAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
             _mockAccNumGenerator.Setup(x => x.GenerateAsync(It.IsAny<CancellationToken>())).ReturnsAsync(accountNumber);
@@ -112,9 +112,9 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CreateAccount
 
             _mockCustomerRepo.Setup(x => x.GetCustomerByIdAsync(customer.Id, It.IsAny<CancellationToken>())).ReturnsAsync(customer);
             _mockAccNumGenerator.Setup(x => x.GenerateAsync(It.IsAny<CancellationToken>())).ReturnsAsync(accountNumber);
-            _mockCurrentUserService.Setup(x => x.UserId).Returns(string.Empty);
+            _mockCurrentUserService.Setup(x => x.UserId).Returns(Guid.Empty);
 
-            var command = new CreateAccountCommand { CustomerId = customer.Id, Currency = "INR", InitialBalance = 1000, Type = Domain.Enums.AccountType.Savings };
+            var command = new CreateAccountCommand { CustomerId = customer.Id, Currency = "IN", InitialBalance = 1000, Type = Domain.Enums.AccountType.Savings };
 
             //Act and Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
