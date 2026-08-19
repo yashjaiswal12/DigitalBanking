@@ -14,6 +14,7 @@ namespace DigitalBanking.Infrastructure.Persistence
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Beneficiary> Beneficiaries { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions, 
             IDateTimeProvider dateTimeProvider, ICurrentUserService currentUserService) : base(dbContextOptions)
