@@ -26,6 +26,8 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.HasKey(x => x.Id);
             entityTypeBuilder.HasIndex(x => new {x.CustomerId, x.BeneficiaryAccountNumber}).IsUnique();
             entityTypeBuilder.HasIndex(x => x.CustomerId);
+
+            entityTypeBuilder.Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken(true);
         }
     }
 }

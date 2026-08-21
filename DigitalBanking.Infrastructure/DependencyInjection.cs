@@ -72,6 +72,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped<IReferenceNumberGenerator, ReferenceNumberGenerator>();
+            services.AddScoped<ITransactionQueries, TransactionQueries>();
 
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -82,6 +83,7 @@ namespace DigitalBanking.Infrastructure
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
+            services.AddScoped<IStatementQueries, StatementQueries>();
             
             return services;
         }

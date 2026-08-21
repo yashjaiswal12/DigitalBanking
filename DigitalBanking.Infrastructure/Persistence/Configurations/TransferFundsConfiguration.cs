@@ -25,6 +25,8 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.HasIndex(x => x.SourceAccountId);
             entityTypeBuilder.HasIndex(x => x.DestinationAccountId);
             entityTypeBuilder.HasIndex(x => x.ReferenceNumber).IsUnique();
+
+            entityTypeBuilder.Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken(true);
             
             entityTypeBuilder.HasOne<Account>().WithMany().HasForeignKey(x => x.SourceAccountId).OnDelete(DeleteBehavior.Restrict);
             entityTypeBuilder.HasOne<Account>().WithMany().HasForeignKey(x => x.DestinationAccountId).OnDelete(DeleteBehavior.Restrict);

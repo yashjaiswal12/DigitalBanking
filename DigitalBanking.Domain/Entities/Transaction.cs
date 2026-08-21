@@ -16,6 +16,7 @@ namespace DigitalBanking.Domain.Entities
         public TransactionStatus Status { get; private set; } = TransactionStatus.Pending;
         public DateTime? CompletedAtUtc { get; private set; }
         public string? FailureReason { get; private set; }
+        public byte[] RowVersion { get; private set; } = [];
 
         #endregion
 
