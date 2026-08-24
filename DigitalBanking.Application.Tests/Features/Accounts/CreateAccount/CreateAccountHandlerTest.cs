@@ -27,7 +27,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.CreateAccount
             _mockCurrentUserService = new Mock<ICurrentUserService>();
 
             _handler = new CreateAccountCommandHandler(_mockCustomerRepo.Object, _mockAccountRepo.Object, _mockUnitOfWork.Object,
-                _mockAccNumGenerator.Object, NullLogger<CreateAccountCommandHandler>.Instance, _mockCurrentUserService.Object);
+                _mockAccNumGenerator.Object, NullLogger<CreateAccountCommandHandler>.Instance);
         }
 
         [Fact]

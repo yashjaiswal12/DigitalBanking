@@ -52,6 +52,7 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Login
 
             var accessToken = _jwtTokenGenerator.GenerateAccessToken(customer);
             var refreshToken = _jwtTokenGenerator.GenerateRefreshToken(customer);
+            //var hashedRefreshToken = _jwtTokenGenerator.HashRefreshToken(refreshToken.Token);
 
             var existingRefreshToken = await _refreshTokenRepository.GetRefreshTokenByCustomerIdAsync(customer.Id, cancellationToken);
             if (existingRefreshToken == null)

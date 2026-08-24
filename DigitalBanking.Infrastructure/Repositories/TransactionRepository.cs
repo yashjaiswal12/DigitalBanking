@@ -33,5 +33,20 @@ namespace DigitalBanking.Infrastructure.Repositories
         {
             return await _context.Transactions.SingleOrDefaultAsync(x => x.Id == transactionId, cancellationToken);
         }
+
+        public Task<Transaction?> GetPagedTransactionsAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<Transaction> GetQueryable()
+        {
+            return _context.Transactions.AsNoTracking();
+        }
+
+        public Task<Transaction?> GetTransactionByReferenceNumberAsync(string referenceNumber, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

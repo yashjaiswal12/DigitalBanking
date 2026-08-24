@@ -32,9 +32,9 @@ namespace DigitalBanking.Infrastructure.Persistence.Configurations
             entityTypeBuilder.Property(x => x.ClosedOn).IsRequired(false);
 
             entityTypeBuilder.Property(x => x.CreatedBy).HasMaxLength(100).IsRequired();
-            entityTypeBuilder.Property(x => x.ModifiedBy).HasMaxLength(100).IsRequired(false);
-            entityTypeBuilder.Property(x => x.CreatedOn).IsRequired();
-            entityTypeBuilder.Property(x => x.ModifiedOn).IsRequired(false);
+            entityTypeBuilder.Property(x => x.UpdatedBy).HasMaxLength(100).IsRequired(false);
+            entityTypeBuilder.Property(x => x.CreatedAtUtc).IsRequired();
+            entityTypeBuilder.Property(x => x.UpdatedAtUtc).IsRequired(false);
 
             entityTypeBuilder.Property(x => x.RowVersion).IsRowVersion().IsConcurrencyToken();
         }

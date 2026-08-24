@@ -1,4 +1,5 @@
 ﻿using DigitalBanking.Application.Authorization;
+using DigitalBanking.Application.Features.Statements.Exports;
 using DigitalBanking.Application.Interfaces.Common;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Application.Interfaces.Security;
@@ -6,6 +7,7 @@ using DigitalBanking.Application.Interfaces.Services;
 using DigitalBanking.Infrastructure.Identities;
 using DigitalBanking.Infrastructure.Identities.Configuration;
 using DigitalBanking.Infrastructure.Persistence;
+using DigitalBanking.Infrastructure.Persistence.Services;
 using DigitalBanking.Infrastructure.Repositories;
 using DigitalBanking.Infrastructure.Services;
 using DigitalBanking.Infrastructure.Services.Common;
@@ -72,6 +74,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped<IReferenceNumberGenerator, ReferenceNumberGenerator>();
+            services.AddScoped<ITransactionQueries, TransactionQueries>();
 
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -82,7 +85,9 @@ namespace DigitalBanking.Infrastructure
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
-            
+            services.AddScoped<IStatementQueries, StatementQueries>();
+            services.AddScoped<IStatementExportService, StatementExportService>();
+
             return services;
         }
     }
