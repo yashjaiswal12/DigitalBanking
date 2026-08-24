@@ -1,9 +1,10 @@
-﻿using DigitalBanking.Domain.Enums;
+﻿using DigitalBanking.Domain.Common;
+using DigitalBanking.Domain.Enums;
 using DigitalBanking.Domain.Exceptions;
 
 namespace DigitalBanking.Domain.Entities
 {
-    public class Account
+    public class Account : AuditableEntity
     {
         #region Properties
         public Guid Id { get; private set; }
@@ -18,10 +19,6 @@ namespace DigitalBanking.Domain.Entities
         public DateTimeOffset? OpenedOn { get; private set; }
         public DateTimeOffset? FrozenOn { get; private set; }
         public DateTimeOffset? ClosedOn { get; private set; }
-        public DateTimeOffset CreatedOn { get; private set; }
-        public string CreatedBy { get; private set; } = string.Empty;
-        public DateTimeOffset? ModifiedOn { get; private set; }
-        public string ModifiedBy { get; private set;} = string.Empty;
         public byte[] RowVersion { get; private set; } = [];
 
         #endregion
@@ -33,14 +30,13 @@ namespace DigitalBanking.Domain.Entities
         }
 
         private Account(string accountNumber, Guid customerId, AccountType accountType, string currency,
-            decimal initialBalance, string createdBy)
+            decimal initialBalance)
         {
             ValidateAccountNumber(accountNumber);
             ValidateCustomerId(customerId);
             ValidateCurrencyCode(currency);
             ValidateAccountType(accountType);
             ValidateBalances(initialBalance);
-            ValidateCreatedBy(createdBy);
 
             Id = Guid.NewGuid();
             AccountNumber = accountNumber;
@@ -52,8 +48,6 @@ namespace DigitalBanking.Domain.Entities
             MinimumBalance = 1000;
 
             Status = AccountStatus.Pending;
-            CreatedOn = DateTimeOffset.UtcNow;
-            CreatedBy = createdBy;
 
             OpenedOn = null;
             FrozenOn = null;
@@ -65,9 +59,9 @@ namespace DigitalBanking.Domain.Entities
         #region Behaviors
 
         public static Account Create(string accountNumber, Guid customerId, AccountType accountType, string currency,
-            decimal initialBalance, string createdBy)
+            decimal initialBalance)
         {
-            return new Account(accountNumber, customerId, accountType, currency, initialBalance, createdBy);
+            return new Account(accountNumber, customerId, accountType, currency, initialBalance);
         }
 
         public void Credit(decimal amount)
@@ -202,12 +196,6 @@ namespace DigitalBanking.Domain.Entities
         {
             if (!Enum.IsDefined(accountType))
                 throw new ArgumentOutOfRangeException(nameof(accountType), "Invalid account type");
-        }
-
-        private static void ValidateCreatedBy(string createdBy)
-        {
-            if (string.IsNullOrWhiteSpace(createdBy))
-                throw new ArgumentException("Created by is required", nameof(createdBy));
         }
 
         #endregion

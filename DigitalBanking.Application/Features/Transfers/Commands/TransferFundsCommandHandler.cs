@@ -62,6 +62,8 @@ namespace DigitalBanking.Application.Features.Transfers.Commands
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 _transaction?.MarkAsFailed("Failed to transfer funds");
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 throw new DbUpdateConcurrencyException("Account balance changed during transfer.");
             }
 

@@ -14,10 +14,12 @@ namespace DigitalBanking.Infrastructure.Identities
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
         private readonly JwtOptions _jwtOptions;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public JwtTokenGenerator(IOptionsMonitor<JwtOptions> optionsMonitor)
+        public JwtTokenGenerator(IOptionsMonitor<JwtOptions> optionsMonitor, IPasswordHasher passwordHasher)
         {
             _jwtOptions = optionsMonitor.CurrentValue;
+            _passwordHasher = passwordHasher;
         }
 
         public string GenerateAccessToken(Customer customer)
@@ -58,8 +60,12 @@ namespace DigitalBanking.Infrastructure.Identities
             using var randomNum = RandomNumberGenerator.Create();
             randomNum.GetBytes(randomBytes);
             var token = Convert.ToBase64String(randomBytes);
-
             return RefreshToken.Create(customer.Id, token, DateTime.UtcNow.AddDays(7), DateTime.UtcNow);
+        }
+
+        public string HashRefreshToken(string token)
+        {
+            return _passwordHasher.Hash(token);
         }
     }
 }

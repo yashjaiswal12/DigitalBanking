@@ -16,6 +16,7 @@ namespace DigitalBanking.Domain.Entities
         public string BeneficiaryBankName { get; private set; } = string.Empty;
         public BeneficiaryStatus Status { get; private set; } = BeneficiaryStatus.PendingVerification;
         public DateTime? VerifiedAt { get; private set; }
+        public byte[] RowVersion { get; private set; } = [];
 
         #endregion
 

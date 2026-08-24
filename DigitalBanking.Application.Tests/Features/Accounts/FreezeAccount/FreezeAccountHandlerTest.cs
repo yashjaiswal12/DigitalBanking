@@ -27,7 +27,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.FreezeAccount
             // Arrange
             var accountId = Guid.NewGuid();
             var customerId = Guid.NewGuid();
-            var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000, "test-created-by");
+            var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000);
 
             _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync(account);
             _mockWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
@@ -69,7 +69,7 @@ namespace DigitalBanking.Application.Tests.Features.Accounts.FreezeAccount
             // Arrange
             var accountId = Guid.NewGuid();
             var customerId = Guid.NewGuid();
-            var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000, "test-created-by");
+            var account = Account.Create("123456789012", customerId, Domain.Enums.AccountType.Savings, "INR", 1000);
 
             _mockRepository.Setup(x => x.GetByIdAsync(accountId, It.IsAny<CancellationToken>())).ReturnsAsync(account);
             _mockWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));

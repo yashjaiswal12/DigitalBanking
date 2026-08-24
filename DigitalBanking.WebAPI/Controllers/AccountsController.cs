@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using DigitalBanking.Application.Authorization;
+using DigitalBanking.Application.Common.Pagination;
 using DigitalBanking.Application.Features.Accounts.Commands.ActivateAccount;
 using DigitalBanking.Application.Features.Accounts.Commands.CloseAccount;
 using DigitalBanking.Application.Features.Accounts.Commands.CreateAccount;
@@ -48,7 +49,7 @@ namespace DigitalBanking.WebAPI.Controllers
         public async Task<IActionResult> SearchAccountsAsync([FromQuery] SearchAccountsQuery request, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(request, cancellationToken);
-            return Ok(new ApiResponse<List<AccountDto>>
+            return Ok(new ApiResponse<PagedResult<AccountDto>>
             {
                 Data = result,
                 Message = "Retrieved account list with given search criteria"

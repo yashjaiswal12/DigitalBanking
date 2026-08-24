@@ -1,11 +1,12 @@
-﻿using DigitalBanking.Application.Features.Accounts.DTOs;
+﻿using DigitalBanking.Application.Common.Pagination;
+using DigitalBanking.Application.Features.Accounts.DTOs;
 using DigitalBanking.Application.Interfaces.Persistence;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
 {
-    public class SearchAccountsQueryHandler : IRequestHandler<SearchAccountsQuery, List<AccountDto>>
+    public class SearchAccountsQueryHandler : IRequestHandler<SearchAccountsQuery, PagedResult<AccountDto>>
     {
         private readonly IAccountQueries _accountQueries;
         private readonly ILogger<SearchAccountsQueryHandler> _logger;
@@ -16,7 +17,7 @@ namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
             _logger = logger;
         }
 
-        public async Task<List<AccountDto>> Handle(SearchAccountsQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<AccountDto>> Handle(SearchAccountsQuery request, CancellationToken cancellationToken)
         {
             var searchAccountCriteria = new SearchAccountCriteria
             {
@@ -25,7 +26,7 @@ namespace DigitalBanking.Application.Features.Accounts.Queries.SearchAccounts
                 Currency = request.Currency,
                 Status = request.Status,
                 Type = request.Type,
-                PageNumber = request.PageNumber,
+                PageNumber = request.Page,
                 PageSize = request.PageSize
             };
 

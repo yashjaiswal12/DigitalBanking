@@ -6,5 +6,6 @@ namespace DigitalBanking.Application.Interfaces.Security
     {
         string GenerateAccessToken(Customer customer);
         RefreshToken GenerateRefreshToken(Customer customer);
+        string HashRefreshToken(string token);
     }
 }

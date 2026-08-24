@@ -28,7 +28,7 @@ namespace DigitalBanking.Application.Features.Authentication.Commands.Logout
                 throw new InvalidTokenException("Refresh token is invalid");
 
             var parsedCustomerId = _currentUserService.UserId;
-            if (parsedCustomerId == refreshToken.CustomerId)
+            if (parsedCustomerId != refreshToken.CustomerId)
                 throw new ForbiddenException();
 
             if (refreshToken.IsRevoked)
