@@ -24,9 +24,13 @@ namespace DigitalBanking.Application.Features.Transfers.Queries.GetTransactionBy
             var transaction = await _transactionRepository.GetByTransactionIdAsync(request.TransactionId, cancellationToken)
                 ?? throw new InvalidOperationException("Invalid transaction id");
 
-            var account = await _accountRepository.GetByIdAsync(transaction.SourceAccountId, cancellationToken)
+            var sourceAccount = await _accountRepository.GetByIdAsync(transaction.SourceAccountId, cancellationToken)
                 ?? throw new Exception();
-            if (account.CustomerId != _currentUserService.UserId)
+
+            var destinationAccount = await _accountRepository.GetByIdAsync(transaction.DestinationAccountId, cancellationToken)
+                ?? throw new Exception();
+
+            if (sourceAccount.CustomerId != _currentUserService.UserId && destinationAccount.CustomerId != _currentUserService.UserId)
                 throw new ForbiddenException();
 
             return new TransactionDetailDto

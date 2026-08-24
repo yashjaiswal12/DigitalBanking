@@ -2,10 +2,9 @@
 using DigitalBanking.Application.Interfaces.Common;
 using DigitalBanking.Application.Interfaces.Persistence;
 using DigitalBanking.Domain.Exceptions;
-using DigitalBanking.Infrastructure.Services.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalBanking.Infrastructure.Repositories
+namespace DigitalBanking.Infrastructure.Persistence.Services
 {
     public class StatementQueries : IStatementQueries
     {
@@ -32,10 +31,14 @@ namespace DigitalBanking.Infrastructure.Repositories
                 throw new ForbiddenException();
 
             var transactionQuery = _transactionRepository.GetQueryable();
-            transactionQuery = transactionQuery.Where(x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId);
-            transactionQuery = transactionQuery.Where(x => x.CreatedAtUtc >= fromDateUtc && x.CreatedAtUtc <= toDateUtc);
+            transactionQuery = transactionQuery.Where(x => (x.SourceAccountId == accountId || x.DestinationAccountId == accountId)
+                && x.Status == Domain.Enums.TransactionStatus.Completed);
+            transactionQuery = transactionQuery.Where(x => x.CreatedAtUtc >= fromDateUtc && x.CreatedAtUtc < toDateUtc);
 
-            var transactions = await transactionQuery.OrderBy(x => x.CreatedBy)
+            var customer = await _customerRepository.GetCustomerByIdAsync(account.CustomerId, cancellationToken) ??
+                throw new CustomerNotFoundException();
+
+            var transactions = await transactionQuery.OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id)
                 .Select(x => new StatementTransactionDto
                 {
                     Amount = x.Amount,
@@ -59,7 +62,7 @@ namespace DigitalBanking.Infrastructure.Repositories
             {
                 TotalCredits = totalCredits,
                 TotalDebits = totalDebits,
-                TotalTransactions = transactionQuery.Count()
+                TotalTransactions = await transactionQuery.CountAsync(cancellationToken)
             };
 
             return new AccountStatementDto
@@ -72,7 +75,7 @@ namespace DigitalBanking.Infrastructure.Repositories
                 ToDateTimeUtc = toDateUtc,
                 StatementSummary = summary,
                 Transactions = transactions,
-                CustomerName = account.CustomerId.ToString()
+                CustomerName = $"{customer.FirstName} {customer.LastName}"
             };
         }
     }

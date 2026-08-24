@@ -34,7 +34,7 @@ namespace DigitalBanking.Application.Tests.Features.Beneficiaries.AddBeneficiary
             // Arrange
             var customerId = Guid.NewGuid();
             var accountNumber = "test-account-number";
-            var account = Account.Create(accountNumber, customerId, Domain.Enums.AccountType.Savings, "INR", 1000, customerId.ToString());
+            var account = Account.Create(accountNumber, customerId, Domain.Enums.AccountType.Savings, "INR", 1000);
 
             account.Activate();
 
@@ -126,7 +126,7 @@ namespace DigitalBanking.Application.Tests.Features.Beneficiaries.AddBeneficiary
             // Arrange
             var customerId = Guid.NewGuid();
             var accountNumber = "test-account-number";
-            var account = Account.Create(accountNumber, customerId, Domain.Enums.AccountType.Savings, "INR", 1000, customerId.ToString());
+            var account = Account.Create(accountNumber, customerId, Domain.Enums.AccountType.Savings, "INR", 1000);
 
             _mockUserService.Setup(x => x.UserId).Returns(customerId);
             _mockBeneficiaryRepo.Setup(x => x.BeneficiaryExistsAsync(customerId, accountNumber, It.IsAny<CancellationToken>())).ReturnsAsync(false);

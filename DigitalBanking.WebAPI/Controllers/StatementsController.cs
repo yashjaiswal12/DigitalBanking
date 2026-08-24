@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using DigitalBanking.Application.Features.Statements.DTOs;
+using DigitalBanking.Application.Features.Statements.Queries.ExportStatement;
 using DigitalBanking.Application.Features.Statements.Queries.GetStatement;
 using DigitalBanking.WebAPI.Common;
 using MediatR;
@@ -22,7 +23,7 @@ namespace DigitalBanking.WebAPI.Controllers
         }
 
         [HttpGet("statements")]
-        public async Task<IActionResult> GetAccountStatements([FromRoute] Guid accountId, [FromBody] GenerateStatementRequestDto dto, 
+        public async Task<IActionResult> GetAccountStatements([FromRoute] Guid accountId, [FromQuery] GenerateStatementRequestDto dto, 
             CancellationToken cancellationToken)
         {
             var query = new GetStatementQuery { AccountId = accountId, FromDateUtc = dto.FromDateUtc, ToDateUtc = dto.ToDateUtc };
@@ -33,6 +34,23 @@ namespace DigitalBanking.WebAPI.Controllers
                 Data = result,
                 Message = "Account statements retrieved successfully"
             });
+        }
+
+        [HttpGet("statements/export")]
+        public async Task<IActionResult> ExportTransactions([FromRoute] Guid accountId, [FromQuery] ExportStatementRequestDto requestDto, 
+            CancellationToken cancellationToken)
+        {
+            var request = new ExportStatementQuery
+            {
+                AccountId = accountId,
+                Format = requestDto.Format,
+                FromDateUtc = requestDto.FromDateUtc,
+                ToDateUtc = requestDto.ToDateUtc
+            };
+
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return File(result.Content, result.ContentType, result.FileName);
         }
     }
 }

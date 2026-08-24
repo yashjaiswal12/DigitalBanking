@@ -15,17 +15,15 @@ namespace DigitalBanking.Application.Features.Accounts.Commands.CreateAccount
         private readonly ILogger<CreateAccountCommandHandler> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAccountNumberGenerator _accountNumberGenerator;
-        private readonly ICurrentUserService _userService;
 
         public CreateAccountCommandHandler(ICustomerRepository customerRepository, IAccountRepository accountRepository, IUnitOfWork unitOfWork,
-            IAccountNumberGenerator accountNumberGenerator, ILogger<CreateAccountCommandHandler> logger, ICurrentUserService userService)
+            IAccountNumberGenerator accountNumberGenerator, ILogger<CreateAccountCommandHandler> logger)
         {
             _customerRepository = customerRepository;
             _accountRepository = accountRepository;
             _unitOfWork = unitOfWork;
             _accountNumberGenerator = accountNumberGenerator;
             _logger = logger;
-            _userService = userService;
         }
 
         public async Task<Guid> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -38,7 +36,7 @@ namespace DigitalBanking.Application.Features.Accounts.Commands.CreateAccount
 
             var accountNumber = await _accountNumberGenerator.GenerateAsync(cancellationToken);
             var account = Account.Create(accountNumber, request.CustomerId, request.Type, request.Currency, 
-                request.InitialBalance, _userService.UserId.ToString());
+                request.InitialBalance);
 
             await _accountRepository.AddAccountAsync(account, cancellationToken);
 

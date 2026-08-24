@@ -6,7 +6,7 @@ using DigitalBanking.Domain.Entities;
 using DigitalBanking.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace DigitalBanking.Infrastructure.Repositories
+namespace DigitalBanking.Infrastructure.Persistence.Services
 {
     public class TransactionQueries : ITransactionQueries
     {
