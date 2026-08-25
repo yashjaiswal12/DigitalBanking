@@ -23,6 +23,10 @@
   <ItemGroup>
     <Folder Include="Features\Accounts\Commands\UnfreezeAccount\" />
     <Folder Include="Features\Authentication\DTOs\" />
+    <Folder Include="Features\Kyc\Commands\DeleteKycDocument\" />
+    <Folder Include="Features\Kyc\Commands\UploadKycDocument\" />
+    <Folder Include="Features\Kyc\DTOs\" />
+    <Folder Include="Features\Kyc\Queries\GetKycDocument\" />
   </ItemGroup>
 
 </Project>

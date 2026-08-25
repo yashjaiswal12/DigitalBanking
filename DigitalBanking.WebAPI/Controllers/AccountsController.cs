@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace DigitalBanking.WebAPI.Controllers
 {
     [ApiController]
-    [ApiVersion(1)]
+    [ApiVersion("1")]
     [Route("api/v{version:apiVersion}/accounts")]
     [EnableRateLimiting("request-limit")]
     [Authorize]

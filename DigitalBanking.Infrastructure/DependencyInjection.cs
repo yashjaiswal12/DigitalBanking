@@ -87,6 +87,7 @@ namespace DigitalBanking.Infrastructure
             services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
             services.AddScoped<IStatementQueries, StatementQueries>();
             services.AddScoped<IStatementExportService, StatementExportService>();
+            services.AddScoped<IKycDocumentRepository, KycDocumentRepository>();
 
             return services;
         }

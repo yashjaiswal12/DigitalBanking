@@ -15,6 +15,7 @@ namespace DigitalBanking.Infrastructure.Persistence
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Beneficiary> Beneficiaries { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<KycDocument> KycDocuments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions, 
             IDateTimeProvider dateTimeProvider, ICurrentUserService currentUserService) : base(dbContextOptions)
